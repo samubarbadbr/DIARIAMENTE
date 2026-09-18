@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#000000" />
+
+  <title>Diariamente — il diario guidato che vive nel tuo browser</title>
+  <meta name="description" content="Diariamente è la PWA di journaling e self-reflection: diario guidato, note audio con trascrizione, heatmap della costanza. Si installa dalla schermata Home, senza passare dagli store." />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Diariamente — il diario guidato che vive nel tuo browser" />
+  <meta property="og:description" content="Tre minuti al giorno per capire come stai davvero. Installabile dalla schermata Home di iPhone e Android." />
+  <meta property="og:url" content="https://www.diariamente.it" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="canonical" href="https://www.diariamente.it" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A7%A0%3C/text%3E%3C/svg%3E" />
+
+  <!-- Tipografia: Inter, il sostituto libero più vicino a SF Pro -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind via CDN: nessuno step di build, deploy diretto su GitHub Pages -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Inter"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Fogli di stile, dal più astratto al più specifico -->
+  <link rel="stylesheet" href="./assets/css/tokens.css" />
+  <link rel="stylesheet" href="./assets/css/base.css" />
+  <link rel="stylesheet" href="./assets/css/effects.css" />
+  <link rel="stylesheet" href="./assets/css/components.css" />
+</head>
+
+<body>
+  <a href="#funzionalita" class="visually-hidden">Salta al contenuto</a>
+
+  <!-- Grana finissima su tutta la pagina: toglie la piattezza al nero pieno -->
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- I componenti vengono montati qui da app.js -->
+  <div id="app"></div>
+
+  <noscript>
+    <div style="padding:48px 24px;max-width:640px;margin:0 auto">
+      <h1 style="font-size:1.6rem;margin-bottom:12px">Diariamente</h1>
+      <p style="color:rgba(255,255,255,.62);line-height:1.6">
+        Per vedere questa pagina serve JavaScript attivo. Puoi comunque aprire l'app:
+        <a href="https://samubarbadbr.github.io/CURAMENTE/" style="text-decoration:underline">apri Diariamente</a>.
+      </p>
+    </div>
+  </noscript>
+
+  <script type="module" src="./assets/js/app.js"></script>
+</body>
+</html>

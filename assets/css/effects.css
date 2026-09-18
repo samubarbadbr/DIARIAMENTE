@@ -1,0 +1,255 @@
+/* =========================================================================
+   effects.css — Materiali e movimento.
+   Tutto ciò che Tailwind non esprime bene: vetro satinato, riflessi
+   metallici, spotlight che segue il cursore, entrate allo scroll.
+   ========================================================================= */
+
+/* ---------- 1. Vetro satinato ---------- */
+
+.glass {
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-stroke);
+  backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+}
+
+.glass--opaque {
+  background: linear-gradient(180deg, rgba(9, 9, 11, 0.82), rgba(0, 0, 0, 0.72));
+  backdrop-filter: blur(28px) saturate(150%);
+  -webkit-backdrop-filter: blur(28px) saturate(150%);
+}
+
+/* Filo di luce sul bordo superiore: è ciò che dà spessore al vetro. */
+.edge-light { position: relative; }
+.edge-light::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.36), transparent);
+  pointer-events: none;
+}
+
+/* ---------- 2. Testo metallico ---------- */
+
+.metal-text {
+  background: linear-gradient(
+    172deg,
+    var(--metal-highlight) 0%,
+    #e8edf5 26%,
+    var(--metal-mid) 52%,
+    var(--metal-shadow) 78%,
+    #e2e8f2 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---------- 3. Pulsanti ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  padding: 0.85rem 1.75rem;
+  transition:
+    transform var(--duration-base) var(--ease-out-soft),
+    box-shadow var(--duration-base) var(--ease-out-soft),
+    background-color var(--duration-base) var(--ease-out-soft),
+    border-color var(--duration-base) var(--ease-out-soft),
+    filter var(--duration-base) var(--ease-out-soft);
+}
+
+.btn:active { transform: scale(0.975); }
+
+/* Primario: superficie in alluminio lucidato con alone indaco. */
+.btn--primary {
+  position: relative;
+  overflow: hidden;
+  color: #05070d;
+  background: linear-gradient(180deg, #ffffff 0%, #ccd6e6 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 14px 38px -16px rgba(226, 232, 240, 0.7),
+    0 0 48px -20px rgba(var(--halo), 0.95);
+}
+
+.btn--primary:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1.5px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 20px 46px -16px rgba(226, 232, 240, 0.8),
+    0 0 76px -16px rgba(var(--halo), 1);
+}
+
+/* Riflesso satinato che attraversa il pulsante al passaggio del mouse. */
+.btn--primary::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -75%;
+  width: 45%;
+  height: 200%;
+  transform: rotate(14deg);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.85), transparent);
+  opacity: 0;
+  transition: left 680ms var(--ease-out-soft), opacity 200ms linear;
+  pointer-events: none;
+}
+
+.btn--primary:hover::after { left: 135%; opacity: 0.75; }
+
+/* Secondario: vetro con bordo che si accende. */
+.btn--ghost {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--glass-stroke);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.btn--ghost:hover {
+  transform: translateY(-1.5px);
+  background: var(--glass-fill-hover);
+  border-color: var(--glass-stroke-hover);
+}
+
+/* ---------- 4. Card con spotlight che segue il cursore ---------- */
+
+.spotlight-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  transition:
+    transform var(--duration-base) var(--ease-out-soft),
+    border-color var(--duration-base) var(--ease-out-soft),
+    box-shadow var(--duration-base) var(--ease-out-soft);
+}
+
+.spotlight-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity var(--duration-base) var(--ease-out-soft);
+  /* --mx / --my vengono aggiornate da effects.js al muoversi del mouse. */
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255, 255, 255, 0.09),
+    rgba(var(--halo), 0.06) 38%,
+    transparent 62%
+  );
+}
+
+.spotlight-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--glass-stroke-hover);
+  box-shadow: var(--shadow-card);
+}
+
+.spotlight-card:hover::after { opacity: 1; }
+
+/* Icona dentro la card: si schiarisce quando la card è attiva. */
+.card-glyph {
+  transition:
+    color var(--duration-base) var(--ease-out-soft),
+    border-color var(--duration-base) var(--ease-out-soft),
+    box-shadow var(--duration-base) var(--ease-out-soft);
+}
+
+.spotlight-card:hover .card-glyph {
+  color: #ffffff;
+  border-color: var(--glass-stroke-hover);
+  box-shadow: 0 0 34px -10px rgba(var(--halo), 0.9);
+}
+
+/* ---------- 5. Entrate allo scroll ---------- */
+
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 26px, 0) scale(0.985);
+  transition:
+    opacity var(--duration-slow) var(--ease-out-soft),
+    transform var(--duration-slow) var(--ease-out-soft);
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- 6. Atmosfera di sfondo ---------- */
+
+.aurora {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  opacity: 0.032;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------- 7. Movimento continuo, quasi impercettibile ---------- */
+
+@keyframes float-soft {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-11px); }
+}
+
+.float-soft { animation: float-soft 8s var(--ease-in-out-soft) infinite; }
+
+/* Riflesso che attraversa il logo a intervalli lunghi. */
+@keyframes mark-sweep {
+  0%, 64% { left: -150%; }
+  84%, 100% { left: 160%; }
+}
+
+.mark-sweep { position: relative; overflow: hidden; }
+.mark-sweep::after {
+  content: "";
+  position: absolute;
+  top: -60%;
+  left: -150%;
+  width: 58%;
+  height: 220%;
+  transform: rotate(10deg);
+  background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  animation: mark-sweep 8s var(--ease-in-out-soft) 1.6s infinite;
+  pointer-events: none;
+}
+
+/* Barre della forma d'onda audio. */
+@keyframes wave-pulse {
+  0%, 100% { transform: scaleY(0.4); opacity: 0.4; }
+  50% { transform: scaleY(1); opacity: 1; }
+}
+
+/* Celle della heatmap che compaiono una a una. */
+@keyframes cell-pop {
+  from { opacity: 0; transform: scale(0.55); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Entrata dei passaggi della guida, rigenerati a ogni cambio di tab. */
+@keyframes reveal-step {
+  from { opacity: 0; transform: translate3d(0, 18px, 0); }
+  to { opacity: 1; transform: none; }
+}

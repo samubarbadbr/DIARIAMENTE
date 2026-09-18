@@ -1,0 +1,246 @@
+/* =========================================================================
+   components.css — Stili specifici dei singoli componenti.
+   ========================================================================= */
+
+/* ---------- Navbar ---------- */
+
+.site-nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 50;
+  border-bottom: 1px solid transparent;
+  transition:
+    background-color var(--duration-base) var(--ease-out-soft),
+    border-color var(--duration-base) var(--ease-out-soft),
+    backdrop-filter var(--duration-base) var(--ease-out-soft);
+}
+
+.site-nav.is-condensed {
+  background: rgba(0, 0, 0, 0.55);
+  border-bottom-color: var(--glass-stroke);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+}
+
+.site-nav__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--nav-height);
+}
+
+.nav-link {
+  position: relative;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  transition: color var(--duration-fast) var(--ease-out-soft);
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  height: 1px;
+  width: 0;
+  background: rgba(255, 255, 255, 0.55);
+  transition: width var(--duration-base) var(--ease-out-soft);
+}
+
+.nav-link:hover { color: #ffffff; }
+.nav-link:hover::after { width: 100%; }
+
+.nav-drawer {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition:
+    max-height var(--duration-base) var(--ease-out-soft),
+    opacity var(--duration-base) var(--ease-out-soft);
+}
+
+.nav-drawer.is-open { max-height: 360px; opacity: 1; }
+
+/* ---------- Logo 3D ---------- */
+
+.brand-mark {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 28%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: radial-gradient(118% 118% at 28% 16%, #26324a 0%, #111a2c 46%, #04060c 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -12px 20px -14px rgba(var(--halo), 0.95),
+    0 12px 28px -14px rgba(0, 0, 0, 0.95);
+}
+
+/* ---------- Mockup smartphone ---------- */
+
+.device-frame {
+  position: relative;
+  padding: 3px;
+  border-radius: 46px;
+  background: linear-gradient(
+    158deg,
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(255, 255, 255, 0.06) 30%,
+    rgba(var(--halo), 0.4) 68%,
+    rgba(255, 255, 255, 0.45) 100%
+  );
+  box-shadow: var(--shadow-float), 0 0 110px -34px rgba(var(--halo), 0.65);
+}
+
+.device-screen {
+  position: relative;
+  border-radius: 43px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #101a30 0%, #05070d 58%, #000000 100%);
+}
+
+.device-notch {
+  position: absolute;
+  top: 9px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 96px;
+  height: 24px;
+  border-radius: var(--radius-pill);
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  z-index: 2;
+}
+
+/* Bagliore diffuso sotto il telefono. */
+.device-halo {
+  position: absolute;
+  left: 50%;
+  bottom: -70px;
+  transform: translateX(-50%);
+  width: 320px;
+  height: 120px;
+  border-radius: 9999px;
+  filter: blur(60px);
+  background: radial-gradient(ellipse, rgba(var(--halo), 0.6), transparent 70%);
+  pointer-events: none;
+}
+
+/* ---------- Slider e forma d'onda dentro il mockup ---------- */
+
+.track { height: 6px; border-radius: 999px; background: rgba(255, 255, 255, 0.1); position: relative; }
+.track__fill { height: 6px; border-radius: 999px; background: linear-gradient(90deg, #64748b, #f2f6fc); }
+
+.wave-bar {
+  width: 2px;
+  border-radius: 999px;
+  background: linear-gradient(to top, rgba(var(--halo), 0.7), rgba(255, 255, 255, 0.95));
+  transform-origin: center;
+  animation: wave-pulse 1.7s var(--ease-in-out-soft) infinite;
+}
+
+.heat-cell {
+  border-radius: 2px;
+  aspect-ratio: 1 / 1;
+  opacity: 0;
+  animation: cell-pop 520ms var(--ease-out-soft) forwards;
+}
+
+/* ---------- Bento grid ---------- */
+
+.bento {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+@media (min-width: 768px) {
+  .bento { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .bento__item--wide { grid-column: span 3; }
+  .bento__item--tall { grid-column: span 3; grid-row: span 2; }
+}
+
+/* ---------- Guida all'installazione ---------- */
+
+.tab-switch {
+  display: inline-flex;
+  gap: 4px;
+  padding: 5px;
+  border-radius: var(--radius-pill);
+}
+
+.tab-switch__btn {
+  border-radius: var(--radius-pill);
+  padding: 0.6rem 1.25rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  transition:
+    background-color var(--duration-base) var(--ease-out-soft),
+    color var(--duration-base) var(--ease-out-soft),
+    box-shadow var(--duration-base) var(--ease-out-soft);
+}
+
+.tab-switch__btn:hover { color: #ffffff; }
+
+.tab-switch__btn[aria-selected="true"] {
+  background: #ffffff;
+  color: #05070d;
+  box-shadow: 0 0 32px -12px rgba(199, 210, 254, 0.95);
+}
+
+.step-index {
+  font-variant-numeric: tabular-nums;
+  font-size: 1.6rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.18);
+}
+
+/* ---------- FAQ ---------- */
+
+.faq-item + .faq-item { border-top: 1px solid var(--glass-stroke); }
+
+.faq-item__trigger {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  width: 100%;
+  padding-block: 1.45rem;
+  text-align: left;
+  font-size: 1.05rem;
+  color: var(--text-primary);
+  transition: color var(--duration-fast) var(--ease-out-soft);
+}
+
+.faq-item__trigger:hover { color: #ffffff; }
+
+.faq-item__chevron {
+  flex-shrink: 0;
+  margin-top: 3px;
+  color: var(--text-tertiary);
+  transition: transform var(--duration-base) var(--ease-out-soft), color var(--duration-base) var(--ease-out-soft);
+}
+
+.faq-item[data-open="true"] .faq-item__chevron { transform: rotate(180deg); color: #ffffff; }
+
+.faq-item__panel {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition:
+    max-height var(--duration-base) var(--ease-out-soft),
+    opacity var(--duration-base) var(--ease-out-soft);
+}
+
+.faq-item[data-open="true"] .faq-item__panel { max-height: 260px; opacity: 1; }
+
+/* ---------- Footer ---------- */
+
+.footer-link {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  transition: color var(--duration-fast) var(--ease-out-soft);
+}
+
+.footer-link:hover { color: #ffffff; }

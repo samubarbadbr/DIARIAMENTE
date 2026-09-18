@@ -1,0 +1,63 @@
+/* =========================================================================
+   tokens.css — Design token di "Diariamente"
+   Unica fonte di verità per colori, raggi, ombre e tempi di animazione.
+   Ogni altro foglio di stile consuma queste variabili, mai valori grezzi.
+   ========================================================================= */
+
+:root {
+  color-scheme: dark;
+
+  /* ---------- Superfici ---------- */
+  --surface-void: #000000;         /* sfondo assoluto della pagina */
+  --surface-raised: #09090b;       /* fasce leggermente sollevate */
+  --surface-deep: #0f172a;         /* blu notte per i pannelli profondi */
+
+  /* ---------- Vetro satinato (Apple frosted glass) ---------- */
+  --glass-fill: rgba(255, 255, 255, 0.03);
+  --glass-fill-hover: rgba(255, 255, 255, 0.055);
+  --glass-stroke: rgba(255, 255, 255, 0.08);
+  --glass-stroke-hover: rgba(255, 255, 255, 0.18);
+  --glass-blur: 24px;
+
+  /* ---------- Testo: gerarchia per opacità, non per colore ---------- */
+  --text-primary: rgba(255, 255, 255, 0.92);
+  --text-secondary: rgba(255, 255, 255, 0.62);
+  --text-tertiary: rgba(255, 255, 255, 0.42);
+
+  /* ---------- Accenti metallici ---------- */
+  --metal-highlight: #ffffff;
+  --metal-mid: #c8d2e0;
+  --metal-shadow: #7c889b;
+  --halo: 99, 102, 241;            /* indaco, usato come rgb() componibile */
+
+  /* ---------- Geometria ---------- */
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 26px;
+  --radius-pill: 999px;
+
+  /* ---------- Profondità ---------- */
+  --shadow-card: 0 24px 60px -32px rgba(0, 0, 0, 0.9);
+  --shadow-float: 0 60px 120px -45px rgba(0, 0, 0, 1);
+  --shadow-inset-top: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+
+  /* ---------- Movimento: curve stile Apple ---------- */
+  --ease-out-soft: cubic-bezier(0.22, 0.8, 0.28, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-fast: 240ms;
+  --duration-base: 420ms;
+  --duration-slow: 900ms;
+
+  /* ---------- Layout ---------- */
+  --container-max: 1180px;
+  --nav-height: 72px;
+}
+
+/* La pagina è dark-only per scelta di brand: ribadiamo lo schema anche
+   quando il contenitore esterno propone un tema chiaro. */
+:root:not([data-theme="light"]) { color-scheme: dark; }
+:root[data-theme="dark"] { color-scheme: dark; }
+
+@media (prefers-color-scheme: dark) {
+  :root { color-scheme: dark; }
+}

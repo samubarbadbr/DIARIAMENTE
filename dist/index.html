@@ -1,0 +1,1916 @@
+﻿<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#000000" />
+
+  <title>Diariamente — il diario guidato che vive nel tuo browser</title>
+  <meta name="description" content="Diariamente è la PWA di journaling e self-reflection: diario guidato, note audio con trascrizione, heatmap della costanza. Si installa dalla schermata Home, senza passare dagli store." />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Diariamente — il diario guidato che vive nel tuo browser" />
+  <meta property="og:description" content="Tre minuti al giorno per capire come stai davvero. Installabile dalla schermata Home di iPhone e Android." />
+  <meta property="og:url" content="https://www.diariamente.it" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="canonical" href="https://www.diariamente.it" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A7%A0%3C/text%3E%3C/svg%3E" />
+
+  <!-- Tipografia: Inter, il sostituto libero più vicino a SF Pro -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind via CDN: nessuno step di build, deploy diretto su GitHub Pages -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Inter"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Fogli di stile, dal più astratto al più specifico -->
+  <style>
+/* =========================================================================
+   tokens.css — Design token di "Diariamente"
+   Unica fonte di verità per colori, raggi, ombre e tempi di animazione.
+   Ogni altro foglio di stile consuma queste variabili, mai valori grezzi.
+   ========================================================================= */
+
+:root {
+  color-scheme: dark;
+
+  /* ---------- Superfici ---------- */
+  --surface-void: #000000;         /* sfondo assoluto della pagina */
+  --surface-raised: #09090b;       /* fasce leggermente sollevate */
+  --surface-deep: #0f172a;         /* blu notte per i pannelli profondi */
+
+  /* ---------- Vetro satinato (Apple frosted glass) ---------- */
+  --glass-fill: rgba(255, 255, 255, 0.03);
+  --glass-fill-hover: rgba(255, 255, 255, 0.055);
+  --glass-stroke: rgba(255, 255, 255, 0.08);
+  --glass-stroke-hover: rgba(255, 255, 255, 0.18);
+  --glass-blur: 24px;
+
+  /* ---------- Testo: gerarchia per opacità, non per colore ---------- */
+  --text-primary: rgba(255, 255, 255, 0.92);
+  --text-secondary: rgba(255, 255, 255, 0.62);
+  --text-tertiary: rgba(255, 255, 255, 0.42);
+
+  /* ---------- Accenti metallici ---------- */
+  --metal-highlight: #ffffff;
+  --metal-mid: #c8d2e0;
+  --metal-shadow: #7c889b;
+  --halo: 99, 102, 241;            /* indaco, usato come rgb() componibile */
+
+  /* ---------- Geometria ---------- */
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 26px;
+  --radius-pill: 999px;
+
+  /* ---------- Profondità ---------- */
+  --shadow-card: 0 24px 60px -32px rgba(0, 0, 0, 0.9);
+  --shadow-float: 0 60px 120px -45px rgba(0, 0, 0, 1);
+  --shadow-inset-top: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+
+  /* ---------- Movimento: curve stile Apple ---------- */
+  --ease-out-soft: cubic-bezier(0.22, 0.8, 0.28, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-fast: 240ms;
+  --duration-base: 420ms;
+  --duration-slow: 900ms;
+
+  /* ---------- Layout ---------- */
+  --container-max: 1180px;
+  --nav-height: 72px;
+}
+
+/* La pagina è dark-only per scelta di brand: ribadiamo lo schema anche
+   quando il contenitore esterno propone un tema chiaro. */
+:root:not([data-theme="light"]) { color-scheme: dark; }
+:root[data-theme="dark"] { color-scheme: dark; }
+
+@media (prefers-color-scheme: dark) {
+  :root { color-scheme: dark; }
+}
+
+
+/* =========================================================================
+   base.css — Reset minimo, tipografia e regole di accessibilità.
+   ========================================================================= */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--nav-height) + 24px);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--surface-void);
+  color: var(--text-primary);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+  font-feature-settings: "cv11", "ss01";
+  letter-spacing: -0.011em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+img, svg { display: block; max-width: 100%; }
+
+a { color: inherit; text-decoration: none; }
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+::selection {
+  background: rgba(var(--halo), 0.38);
+  color: #ffffff;
+}
+
+/* ---------- Scala tipografica ---------- */
+
+.display-1 {
+  font-size: clamp(2.6rem, 7.4vw, 5rem);
+  line-height: 1.04;
+  letter-spacing: -0.038em;
+  font-weight: 600;
+}
+
+.display-2 {
+  font-size: clamp(2.05rem, 4.6vw, 3.35rem);
+  line-height: 1.08;
+  letter-spacing: -0.032em;
+  font-weight: 600;
+}
+
+.display-3 {
+  font-size: clamp(1.4rem, 2.4vw, 1.75rem);
+  line-height: 1.2;
+  letter-spacing: -0.022em;
+  font-weight: 550;
+}
+
+.lede {
+  font-size: clamp(1.02rem, 1.5vw, 1.18rem);
+  line-height: 1.62;
+  font-weight: 350;
+  color: var(--text-secondary);
+  max-width: 58ch;
+}
+
+.body-copy {
+  font-size: 0.945rem;
+  line-height: 1.62;
+  font-weight: 350;
+  color: var(--text-secondary);
+  max-width: 62ch;
+}
+
+/* ---------- Contenitore ---------- */
+
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: 20px;
+}
+
+@media (min-width: 768px) {
+  .container { padding-inline: 32px; }
+}
+
+/* ---------- Ritmo verticale delle sezioni ---------- */
+
+.section {
+  position: relative;
+  padding-block: clamp(80px, 11vw, 140px);
+}
+
+.section--divided { border-top: 1px solid var(--glass-stroke); }
+
+/* ---------- Accessibilità ---------- */
+
+:focus-visible {
+  outline: 2px solid #c7d2fe;
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Chi ha chiesto meno movimento riceve la pagina statica, non una
+   versione impoverita: tutti i contenuti restano visibili. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .reveal { opacity: 1 !important; transform: none !important; }
+}
+
+
+/* =========================================================================
+   effects.css — Materiali e movimento.
+   Tutto ciò che Tailwind non esprime bene: vetro satinato, riflessi
+   metallici, spotlight che segue il cursore, entrate allo scroll.
+   ========================================================================= */
+
+/* ---------- 1. Vetro satinato ---------- */
+
+.glass {
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-stroke);
+  backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+}
+
+.glass--opaque {
+  background: linear-gradient(180deg, rgba(9, 9, 11, 0.82), rgba(0, 0, 0, 0.72));
+  backdrop-filter: blur(28px) saturate(150%);
+  -webkit-backdrop-filter: blur(28px) saturate(150%);
+}
+
+/* Filo di luce sul bordo superiore: è ciò che dà spessore al vetro. */
+.edge-light { position: relative; }
+.edge-light::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.36), transparent);
+  pointer-events: none;
+}
+
+/* ---------- 2. Testo metallico ---------- */
+
+.metal-text {
+  background: linear-gradient(
+    172deg,
+    var(--metal-highlight) 0%,
+    #e8edf5 26%,
+    var(--metal-mid) 52%,
+    var(--metal-shadow) 78%,
+    #e2e8f2 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---------- 3. Pulsanti ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  padding: 0.85rem 1.75rem;
+  transition:
+    transform var(--duration-base) var(--ease-out-soft),
+    box-shadow var(--duration-base) var(--ease-out-soft),
+    background-color var(--duration-base) var(--ease-out-soft),
+    border-color var(--duration-base) var(--ease-out-soft),
+    filter var(--duration-base) var(--ease-out-soft);
+}
+
+.btn:active { transform: scale(0.975); }
+
+/* Primario: superficie in alluminio lucidato con alone indaco. */
+.btn--primary {
+  position: relative;
+  overflow: hidden;
+  color: #05070d;
+  background: linear-gradient(180deg, #ffffff 0%, #ccd6e6 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 14px 38px -16px rgba(226, 232, 240, 0.7),
+    0 0 48px -20px rgba(var(--halo), 0.95);
+}
+
+.btn--primary:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1.5px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 20px 46px -16px rgba(226, 232, 240, 0.8),
+    0 0 76px -16px rgba(var(--halo), 1);
+}
+
+/* Riflesso satinato che attraversa il pulsante al passaggio del mouse. */
+.btn--primary::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -75%;
+  width: 45%;
+  height: 200%;
+  transform: rotate(14deg);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.85), transparent);
+  opacity: 0;
+  transition: left 680ms var(--ease-out-soft), opacity 200ms linear;
+  pointer-events: none;
+}
+
+.btn--primary:hover::after { left: 135%; opacity: 0.75; }
+
+/* Secondario: vetro con bordo che si accende. */
+.btn--ghost {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--glass-stroke);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.btn--ghost:hover {
+  transform: translateY(-1.5px);
+  background: var(--glass-fill-hover);
+  border-color: var(--glass-stroke-hover);
+}
+
+/* ---------- 4. Card con spotlight che segue il cursore ---------- */
+
+.spotlight-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  transition:
+    transform var(--duration-base) var(--ease-out-soft),
+    border-color var(--duration-base) var(--ease-out-soft),
+    box-shadow var(--duration-base) var(--ease-out-soft);
+}
+
+.spotlight-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity var(--duration-base) var(--ease-out-soft);
+  /* --mx / --my vengono aggiornate da effects.js al muoversi del mouse. */
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255, 255, 255, 0.09),
+    rgba(var(--halo), 0.06) 38%,
+    transparent 62%
+  );
+}
+
+.spotlight-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--glass-stroke-hover);
+  box-shadow: var(--shadow-card);
+}
+
+.spotlight-card:hover::after { opacity: 1; }
+
+/* Icona dentro la card: si schiarisce quando la card è attiva. */
+.card-glyph {
+  transition:
+    color var(--duration-base) var(--ease-out-soft),
+    border-color var(--duration-base) var(--ease-out-soft),
+    box-shadow var(--duration-base) var(--ease-out-soft);
+}
+
+.spotlight-card:hover .card-glyph {
+  color: #ffffff;
+  border-color: var(--glass-stroke-hover);
+  box-shadow: 0 0 34px -10px rgba(var(--halo), 0.9);
+}
+
+/* ---------- 5. Entrate allo scroll ---------- */
+
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 26px, 0) scale(0.985);
+  transition:
+    opacity var(--duration-slow) var(--ease-out-soft),
+    transform var(--duration-slow) var(--ease-out-soft);
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- 6. Atmosfera di sfondo ---------- */
+
+.aurora {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  opacity: 0.032;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------- 7. Movimento continuo, quasi impercettibile ---------- */
+
+@keyframes float-soft {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-11px); }
+}
+
+.float-soft { animation: float-soft 8s var(--ease-in-out-soft) infinite; }
+
+/* Riflesso che attraversa il logo a intervalli lunghi. */
+@keyframes mark-sweep {
+  0%, 64% { left: -150%; }
+  84%, 100% { left: 160%; }
+}
+
+.mark-sweep { position: relative; overflow: hidden; }
+.mark-sweep::after {
+  content: "";
+  position: absolute;
+  top: -60%;
+  left: -150%;
+  width: 58%;
+  height: 220%;
+  transform: rotate(10deg);
+  background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  animation: mark-sweep 8s var(--ease-in-out-soft) 1.6s infinite;
+  pointer-events: none;
+}
+
+/* Barre della forma d'onda audio. */
+@keyframes wave-pulse {
+  0%, 100% { transform: scaleY(0.4); opacity: 0.4; }
+  50% { transform: scaleY(1); opacity: 1; }
+}
+
+/* Celle della heatmap che compaiono una a una. */
+@keyframes cell-pop {
+  from { opacity: 0; transform: scale(0.55); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Entrata dei passaggi della guida, rigenerati a ogni cambio di tab. */
+@keyframes reveal-step {
+  from { opacity: 0; transform: translate3d(0, 18px, 0); }
+  to { opacity: 1; transform: none; }
+}
+
+
+/* =========================================================================
+   components.css — Stili specifici dei singoli componenti.
+   ========================================================================= */
+
+/* ---------- Navbar ---------- */
+
+.site-nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 50;
+  border-bottom: 1px solid transparent;
+  transition:
+    background-color var(--duration-base) var(--ease-out-soft),
+    border-color var(--duration-base) var(--ease-out-soft),
+    backdrop-filter var(--duration-base) var(--ease-out-soft);
+}
+
+.site-nav.is-condensed {
+  background: rgba(0, 0, 0, 0.55);
+  border-bottom-color: var(--glass-stroke);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+}
+
+.site-nav__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--nav-height);
+}
+
+.nav-link {
+  position: relative;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  transition: color var(--duration-fast) var(--ease-out-soft);
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  height: 1px;
+  width: 0;
+  background: rgba(255, 255, 255, 0.55);
+  transition: width var(--duration-base) var(--ease-out-soft);
+}
+
+.nav-link:hover { color: #ffffff; }
+.nav-link:hover::after { width: 100%; }
+
+.nav-drawer {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition:
+    max-height var(--duration-base) var(--ease-out-soft),
+    opacity var(--duration-base) var(--ease-out-soft);
+}
+
+.nav-drawer.is-open { max-height: 360px; opacity: 1; }
+
+/* ---------- Logo 3D ---------- */
+
+.brand-mark {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 28%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: radial-gradient(118% 118% at 28% 16%, #26324a 0%, #111a2c 46%, #04060c 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -12px 20px -14px rgba(var(--halo), 0.95),
+    0 12px 28px -14px rgba(0, 0, 0, 0.95);
+}
+
+/* ---------- Mockup smartphone ---------- */
+
+.device-frame {
+  position: relative;
+  padding: 3px;
+  border-radius: 46px;
+  background: linear-gradient(
+    158deg,
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(255, 255, 255, 0.06) 30%,
+    rgba(var(--halo), 0.4) 68%,
+    rgba(255, 255, 255, 0.45) 100%
+  );
+  box-shadow: var(--shadow-float), 0 0 110px -34px rgba(var(--halo), 0.65);
+}
+
+.device-screen {
+  position: relative;
+  border-radius: 43px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #101a30 0%, #05070d 58%, #000000 100%);
+}
+
+.device-notch {
+  position: absolute;
+  top: 9px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 96px;
+  height: 24px;
+  border-radius: var(--radius-pill);
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  z-index: 2;
+}
+
+/* Bagliore diffuso sotto il telefono. */
+.device-halo {
+  position: absolute;
+  left: 50%;
+  bottom: -70px;
+  transform: translateX(-50%);
+  width: 320px;
+  height: 120px;
+  border-radius: 9999px;
+  filter: blur(60px);
+  background: radial-gradient(ellipse, rgba(var(--halo), 0.6), transparent 70%);
+  pointer-events: none;
+}
+
+/* ---------- Slider e forma d'onda dentro il mockup ---------- */
+
+.track { height: 6px; border-radius: 999px; background: rgba(255, 255, 255, 0.1); position: relative; }
+.track__fill { height: 6px; border-radius: 999px; background: linear-gradient(90deg, #64748b, #f2f6fc); }
+
+.wave-bar {
+  width: 2px;
+  border-radius: 999px;
+  background: linear-gradient(to top, rgba(var(--halo), 0.7), rgba(255, 255, 255, 0.95));
+  transform-origin: center;
+  animation: wave-pulse 1.7s var(--ease-in-out-soft) infinite;
+}
+
+.heat-cell {
+  border-radius: 2px;
+  aspect-ratio: 1 / 1;
+  opacity: 0;
+  animation: cell-pop 520ms var(--ease-out-soft) forwards;
+}
+
+/* ---------- Bento grid ---------- */
+
+.bento {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+@media (min-width: 768px) {
+  .bento { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .bento__item--wide { grid-column: span 3; }
+  .bento__item--tall { grid-column: span 3; grid-row: span 2; }
+}
+
+/* ---------- Guida all'installazione ---------- */
+
+.tab-switch {
+  display: inline-flex;
+  gap: 4px;
+  padding: 5px;
+  border-radius: var(--radius-pill);
+}
+
+.tab-switch__btn {
+  border-radius: var(--radius-pill);
+  padding: 0.6rem 1.25rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  transition:
+    background-color var(--duration-base) var(--ease-out-soft),
+    color var(--duration-base) var(--ease-out-soft),
+    box-shadow var(--duration-base) var(--ease-out-soft);
+}
+
+.tab-switch__btn:hover { color: #ffffff; }
+
+.tab-switch__btn[aria-selected="true"] {
+  background: #ffffff;
+  color: #05070d;
+  box-shadow: 0 0 32px -12px rgba(199, 210, 254, 0.95);
+}
+
+.step-index {
+  font-variant-numeric: tabular-nums;
+  font-size: 1.6rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.18);
+}
+
+/* ---------- FAQ ---------- */
+
+.faq-item + .faq-item { border-top: 1px solid var(--glass-stroke); }
+
+.faq-item__trigger {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  width: 100%;
+  padding-block: 1.45rem;
+  text-align: left;
+  font-size: 1.05rem;
+  color: var(--text-primary);
+  transition: color var(--duration-fast) var(--ease-out-soft);
+}
+
+.faq-item__trigger:hover { color: #ffffff; }
+
+.faq-item__chevron {
+  flex-shrink: 0;
+  margin-top: 3px;
+  color: var(--text-tertiary);
+  transition: transform var(--duration-base) var(--ease-out-soft), color var(--duration-base) var(--ease-out-soft);
+}
+
+.faq-item[data-open="true"] .faq-item__chevron { transform: rotate(180deg); color: #ffffff; }
+
+.faq-item__panel {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition:
+    max-height var(--duration-base) var(--ease-out-soft),
+    opacity var(--duration-base) var(--ease-out-soft);
+}
+
+.faq-item[data-open="true"] .faq-item__panel { max-height: 260px; opacity: 1; }
+
+/* ---------- Footer ---------- */
+
+.footer-link {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  transition: color var(--duration-fast) var(--ease-out-soft);
+}
+
+.footer-link:hover { color: #ffffff; }
+
+
+
+  </style>
+</head>
+
+<body>
+  <a href="#funzionalita" class="visually-hidden">Salta al contenuto</a>
+
+  <!-- Grana finissima su tutta la pagina: toglie la piattezza al nero pieno -->
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- I componenti vengono montati qui da app.js -->
+  <div id="app"></div>
+
+  <noscript>
+    <div style="padding:48px 24px;max-width:640px;margin:0 auto">
+      <h1 style="font-size:1.6rem;margin-bottom:12px">Diariamente</h1>
+      <p style="color:rgba(255,255,255,.62);line-height:1.6">
+        Per vedere questa pagina serve JavaScript attivo. Puoi comunque aprire l'app:
+        <a href="https://samubarbadbr.github.io/CURAMENTE/" style="text-decoration:underline">apri Diariamente</a>.
+      </p>
+    </div>
+  </noscript>
+
+  <script>
+/**
+ * icons.js — Set di icone disegnate inline, nello stile di Lucide.
+ * Sono SVG statici per evitare una dipendenza esterna: la pagina resta
+ * completamente autonoma, requisito utile su GitHub Pages.
+ */
+
+const ICON_PATHS = {
+  arrowRight: ["M5 12h13", "m12 5 7 7-7 7"],
+  check: ["M20 6 9 17l-5-5"],
+  chevronDown: ["m6 9 6 6 6-6"],
+  menu: ["M4 7h16", "M4 12h16", "M4 17h16"],
+  close: ["M18 6 6 18", "M6 6l12 12"],
+  mic: [
+    "M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z",
+    "M19 11v1a7 7 0 0 1-14 0v-1",
+    "M12 19v2"
+  ],
+  shield: [
+    "M20 12.5c0 5-3.6 7.6-7.7 9a1 1 0 0 1-.6 0C7.6 20.1 4 17.5 4 12.5V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.2-2.7a1.2 1.2 0 0 1 1.6 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1Z",
+    "m9.2 12 2 2 3.6-3.8"
+  ],
+  phone: ["M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z", "M11 18.5h2"],
+  grid: [
+    "M4 5.5h16a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-13a1 1 0 0 1 1-1Z",
+    "M8 2.5v5",
+    "M16 2.5v5",
+    "M3 11h18"
+  ],
+  notebook: [
+    "M15.5 3.5H6a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h7",
+    "m17.5 12.5 3.2-3.2a1.6 1.6 0 0 0 0-2.3l-.7-.7a1.6 1.6 0 0 0-2.3 0L14.5 9.5v3h3Z",
+    "M8 8h4"
+  ],
+  lock: [
+    "M5 11h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1Z",
+    "M8 11V7.5a4 4 0 0 1 8 0V11",
+    "M12 15v2"
+  ],
+  cloud: ["M17.2 19H8.5a5.5 5.5 0 1 1 5-7.8h3.7a4 4 0 0 1 0 7.8Z"],
+  share: ["M12 15V3", "m8.5 6.5 3.5-3.5 3.5 3.5", "M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"],
+  plusSquare: [
+    "M5.5 4h13a1.5 1.5 0 0 1 1.5 1.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5v-13A1.5 1.5 0 0 1 5.5 4Z",
+    "M12 8.5v7",
+    "M8.5 12h7"
+  ],
+  dots: ["M12 6.2v.01", "M12 12v.01", "M12 17.8v.01"],
+  sparkle: [
+    "m12 3 1.7 5.1a2 2 0 0 0 1.2 1.2L20 11l-5.1 1.7a2 2 0 0 0-1.2 1.2L12 19l-1.7-5.1a2 2 0 0 0-1.2-1.2L4 11l5.1-1.7a2 2 0 0 0 1.2-1.2Z"
+  ],
+  bolt: ["M13 3 5.5 13H11l-1 8 8.5-10.5H13l1-7.5Z"],
+  compass: ["M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z", "m14.8 9.2-1.6 4.1a1 1 0 0 1-.6.6l-4 1.5 1.6-4.1a1 1 0 0 1 .6-.6Z"],
+  download: ["M12 3v11", "m8 10.5 4 4 4-4", "M5 20h14"],
+  eye: ["M12 5c5 0 9 4.3 9 7s-4 7-9 7-9-4.3-9-7 4-7 9-7Z", "M12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z"]
+};
+
+/**
+ * Restituisce il markup di un'icona.
+ * @param {string} name        chiave di ICON_PATHS
+ * @param {string} className   classi Tailwind da applicare all'svg
+ * @param {number} strokeWidth spessore del tratto
+ * @returns {string} markup SVG
+ */
+function icon(name, className = "w-5 h-5", strokeWidth = 1.5) {
+  const paths = ICON_PATHS[name] || [];
+  const body = paths.map((d) => `<path d="${d}" />`).join("");
+
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${strokeWidth}"
+    stroke-linecap="round" stroke-linejoin="round" class="${className}" aria-hidden="true">${body}</svg>`;
+}
+
+/**
+ * Logo 3D di Diariamente: un cervello stilizzato con finitura metallica
+ * dentro un quadrato ad angoli morbidi.
+ * @param {number} size      lato del quadrato in px
+ * @param {boolean} animated se true aggiunge il riflesso che lo attraversa
+ */
+function brandMark(size = 44, animated = true) {
+  const glyph = Math.round(size * 0.64);
+  const uid = `bm${Math.random().toString(36).slice(2, 8)}`;
+
+  return `
+    <span class="brand-mark ${animated ? "mark-sweep" : ""}" style="width:${size}px;height:${size}px">
+      <svg viewBox="0 0 24 24" width="${glyph}" height="${glyph}" fill="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="${uid}-stroke" x1="4" y1="3" x2="20" y2="21" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#ffffff" />
+            <stop offset=".44" stop-color="#c6d1e2" />
+            <stop offset=".72" stop-color="#7d8ca6" />
+            <stop offset="1" stop-color="#eaf0f8" />
+          </linearGradient>
+          <linearGradient id="${uid}-fill" x1="6" y1="20" x2="18" y2="4" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="rgba(99,102,241,.55)" />
+            <stop offset="1" stop-color="rgba(226,232,240,.1)" />
+          </linearGradient>
+        </defs>
+        <path d="M12 4.1c4 0 6.8 2.7 6.8 6.3 0 1.3-.4 2.4-1.1 3.4.4 2.6-1.6 4.8-4.2 4.8-.5 0-1-.1-1.5-.3-.5.2-1 .3-1.5.3-2.6 0-4.6-2.2-4.2-4.8-.7-1-1.1-2.1-1.1-3.4C5.2 6.8 8 4.1 12 4.1Z"
+              fill="url(#${uid}-fill)" stroke="url(#${uid}-stroke)" stroke-width="1.15" stroke-linejoin="round" />
+        <g stroke="url(#${uid}-stroke)" stroke-width="1" stroke-linecap="round" opacity=".92">
+          <path d="M12 4.6v13.6" />
+          <path d="M9.4 7.3c-1.1.4-1.8 1.4-1.8 2.5 0 .8.4 1.5 1 2" />
+          <path d="M14.6 7.3c1.1.4 1.8 1.4 1.8 2.5 0 .8-.4 1.5-1 2" />
+          <path d="M9.5 14.6c.7-.7 1.6-1.1 2.5-1.1" />
+          <path d="M14.5 14.6c-.7-.7-1.6-1.1-2.5-1.1" />
+        </g>
+      </svg>
+    </span>`;
+}
+
+/**
+ * data.js — Tutti i contenuti della pagina in un unico posto.
+ * Modificando questo file si aggiorna la landing senza toccare i componenti.
+ */
+
+/** Destinazione unica di ogni call to action. */
+const APP_URL = "https://samubarbadbr.github.io/CURAMENTE/";
+
+const SITE = {
+  name: "Diariamente",
+  domain: "www.diariamente.it",
+  email: "ciao@diariamente.it"
+};
+
+const NAV_LINKS = [
+  { label: "Funzionalità", href: "#funzionalita" },
+  { label: "Come funziona", href: "#installazione" },
+  { label: "Sicurezza", href: "#sicurezza" },
+  { label: "Domande", href: "#faq" }
+];
+
+const HERO = {
+  badge: "Si installa dal browser in dieci secondi",
+  title: "Ogni giorno lascia una traccia. Qui diventa leggibile.",
+  lede:
+    "Diariamente è un diario guidato che vive nel browser. Rispondi a poche domande, registra un pensiero a voce " +
+    "e guarda come cambiano umore, energia e abitudini nel tempo. Niente App Store, niente Play Store: lo aggiungi " +
+    "alla schermata Home di iPhone o Android e si apre come un'app.",
+  primaryCta: "Inizia ora",
+  secondaryCta: "Aggiungi alla Home"
+};
+
+/**
+ * Funzionalità della bento box.
+ * `layout` decide l'occupazione nella griglia asimmetrica.
+ */
+const FEATURES = [
+  {
+    id: "diario",
+    icon: "notebook",
+    layout: "tall",
+    title: "Diario guidato",
+    body:
+      "Domande mirate che cambiano con il tuo momento e slider per registrare umore, energia e sonno " +
+      "in pochi secondi. Nessuna pagina bianca da riempire nelle sere in cui non hai voglia di scrivere.",
+    visual: "prompt"
+  },
+  {
+    id: "audio",
+    icon: "mic",
+    layout: "wide",
+    title: "Note audio con trascrizione",
+    body: "Premi il microfono e parla. La nota viene trascritta e archiviata insieme alla giornata.",
+    visual: "waveform"
+  },
+  {
+    id: "heatmap",
+    icon: "grid",
+    layout: "wide",
+    title: "Heatmap della costanza",
+    body: "Una griglia in stile GitHub mostra mese dopo mese le serie piene e i vuoti, a colpo d'occhio.",
+    visual: "heatmap"
+  },
+  {
+    id: "privacy",
+    icon: "shield",
+    layout: "wide",
+    title: "Privacy come impostazione predefinita",
+    body: "Voci legate solo al tuo account, protette da regole di accesso per riga su Supabase e cifrate in transito.",
+    visual: "none"
+  },
+  {
+    id: "pwa",
+    icon: "phone",
+    layout: "wide",
+    title: "Esperienza nativa, zero installazioni",
+    body: "Icona sulla Home, apertura a schermo intero, aggiornamenti automatici e pochi megabyte occupati.",
+    visual: "none"
+  }
+];
+
+/** Passaggi della guida all'installazione, divisi per piattaforma. */
+const INSTALL_GUIDE = {
+  ios: {
+    label: "iPhone e iPad",
+    hint: "Serve Safari: da Chrome su iOS il pulsante di installazione non compare.",
+    steps: [
+      {
+        icon: "compass",
+        title: "Apri Diariamente in Safari",
+        body: "Tocca “Inizia ora” in questa pagina oppure digita l'indirizzo nella barra."
+      },
+      {
+        icon: "share",
+        title: "Tocca il pulsante Condividi",
+        body: "È il quadrato con la freccia verso l'alto, in basso al centro dello schermo."
+      },
+      {
+        icon: "plusSquare",
+        title: "Scegli “Aggiungi a Home”",
+        body: "Scorri l'elenco, conferma il nome e tocca Aggiungi: l'icona compare tra le tue app."
+      }
+    ]
+  },
+  android: {
+    label: "Android",
+    hint: "Su alcuni telefoni la voce si chiama “Installa app”.",
+    steps: [
+      {
+        icon: "compass",
+        title: "Apri Diariamente in Chrome",
+        body: "Spesso appare già un banner in basso che propone l'installazione: puoi usare quello."
+      },
+      {
+        icon: "dots",
+        title: "Apri il menu con i tre puntini",
+        body: "In alto a destra, accanto alla barra degli indirizzi."
+      },
+      {
+        icon: "download",
+        title: "Scegli “Aggiungi a schermata Home”",
+        body: "Conferma e trovi Diariamente insieme alle altre app, senza passare dal Play Store."
+      }
+    ]
+  }
+};
+
+const SECURITY_POINTS = [
+  {
+    icon: "lock",
+    title: "Il diario è tuo e basta",
+    body: "Le voci sono legate al tuo account e protette da regole di accesso per riga: nessun altro utente può leggerle."
+  },
+  {
+    icon: "shield",
+    title: "Cifratura in transito e a riposo",
+    body: "Connessione TLS verso Supabase e archiviazione cifrata sui server, con backup gestiti."
+  },
+  {
+    icon: "eye",
+    title: "Nessuna pubblicità, nessuna profilazione",
+    body: "Non vendiamo i dati e non li usiamo per costruire profili pubblicitari. Non c'è niente da vendere."
+  },
+  {
+    icon: "download",
+    title: "Esporta o cancella quando vuoi",
+    body: "Scarichi l'archivio completo in un file oppure elimini l'account: i dati spariscono con lui."
+  }
+];
+
+const FAQ_ITEMS = [
+  {
+    q: "Perché non è sugli store?",
+    a: "Perché non serve. Diariamente è una PWA: si installa dal browser, si aggiorna da sola e occupa pochi megabyte. Funziona allo stesso modo su iPhone, Android e desktop."
+  },
+  {
+    q: "Funziona senza connessione?",
+    a: "Le voci recenti restano consultabili offline. Quando torni online, le nuove risposte si sincronizzano da sole."
+  },
+  {
+    q: "Quanto tempo richiede al giorno?",
+    a: "Due o tre minuti. Le domande guidate e gli slider servono proprio a evitare la pagina bianca."
+  },
+  {
+    q: "Le note audio vengono ascoltate da qualcuno?",
+    a: "No. L'audio viene trascritto in automatico e resta nel tuo archivio privato, come qualsiasi altra voce del diario."
+  },
+  {
+    q: "Posso portare via i miei dati?",
+    a: "Sì, in qualsiasi momento. Esporti l'archivio completo in un file oppure elimini l'account e tutto quello che contiene."
+  }
+];
+
+const FOOTER_COLUMNS = [
+  {
+    title: "Prodotto",
+    links: [
+      { label: "Apri la web app", href: APP_URL },
+      { label: "Funzionalità", href: "#funzionalita" },
+      { label: "Come si installa", href: "#installazione" },
+      { label: "Sicurezza", href: "#sicurezza" }
+    ]
+  },
+  {
+    title: "Legale",
+    links: [
+      { label: "Informativa privacy", href: "#privacy" },
+      { label: "Termini di servizio", href: "#termini" },
+      { label: "Cookie", href: "#cookie" }
+    ]
+  },
+  {
+    title: "Contatti",
+    links: [
+      { label: SITE.email, href: `mailto:${SITE.email}` },
+      { label: "Instagram", href: "https://instagram.com" },
+      { label: "X", href: "https://x.com" }
+    ]
+  }
+];
+
+/**
+ * phone-mockup.js — Frame smartphone che mostra l'interfaccia di Diariamente.
+ * Le micro-animazioni interne (forma d'onda, heatmap) rendono la schermata
+ * viva senza distrarre dal testo dell'hero.
+ */
+
+
+/** Barre animate che simulano una registrazione vocale. */
+function renderWaveform(bars = 26) {
+  return Array.from({ length: bars })
+    .map((_, i) => {
+      const height = 8 + ((i * 13) % 20);
+      return `<span class="wave-bar" style="height:${height}px;animation-delay:${i * 58}ms"></span>`;
+    })
+    .join("");
+}
+
+/**
+ * Griglia della costanza in stile GitHub.
+ * I livelli sono generati in modo deterministico: stesso disegno a ogni carico.
+ */
+function renderHeatmap(columns = 17, rows = 7) {
+  const shades = [
+    "rgba(255,255,255,.06)",
+    "rgba(148,163,184,.34)",
+    "rgba(199,210,254,.6)",
+    "rgba(238,242,255,.93)"
+  ];
+
+  const cells = [];
+  for (let col = 0; col < columns; col += 1) {
+    for (let row = 0; row < rows; row += 1) {
+      const seed = (col * 7 + row * 3) % 11;
+      const level = seed > 8 ? 3 : seed > 5 ? 2 : seed > 2 ? 1 : 0;
+      const delay = col * 24 + row * 8;
+      cells.push(
+        `<span class="heat-cell" style="background:${shades[level]};animation-delay:${delay}ms"></span>`
+      );
+    }
+  }
+
+  return `
+    <div class="grid gap-[3px]"
+         style="grid-auto-flow:column;grid-template-columns:repeat(${columns},minmax(0,1fr));grid-template-rows:repeat(${rows},minmax(0,1fr))">
+      ${cells.join("")}
+    </div>`;
+}
+
+function renderPhoneMockup() {
+  return `
+  <div class="relative" data-parallax="0.06">
+    <div class="device-halo"></div>
+
+    <div class="device-frame float-soft" style="width:300px">
+      <div class="device-screen">
+        <div class="device-notch"></div>
+
+        <div class="flex items-center justify-between px-6 pt-4 pb-1 text-[0.7rem] text-white/50">
+          <span>9:41</span>
+          <span class="inline-block w-5 h-2.5 rounded-[3px] border border-white/40"></span>
+        </div>
+
+        <div class="px-5 pb-5 pt-3">
+
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              ${brandMark(30, false)}
+              <div class="leading-tight">
+                <p class="text-[0.8rem] text-white/90">Buonasera, Marta</p>
+                <p class="text-[0.68rem] text-white/45">giovedì 17 settembre</p>
+              </div>
+            </div>
+            <span class="text-[0.68rem] rounded-full border border-white/10 px-2.5 py-1 text-white/55">28 giorni</span>
+          </div>
+
+          <!-- Domanda guidata del giorno -->
+          <div class="glass edge-light rounded-[18px] p-4 mt-5">
+            <p class="text-[0.7rem] text-white/45">Domanda di oggi</p>
+            <p class="text-[1.02rem] leading-snug mt-1.5 text-white/92 tracking-[-0.02em]">
+              Cosa ti ha richiesto più energia?
+            </p>
+
+            <div class="mt-4">
+              <div class="flex justify-between text-[0.68rem] text-white/45 mb-2">
+                <span>Energia</span><span class="text-white/85">7 / 10</span>
+              </div>
+              <div class="track">
+                <div class="track__fill" style="width:70%"></div>
+                <span class="absolute -top-[5px] w-4 h-4 rounded-full bg-white"
+                      style="left:calc(70% - 8px);box-shadow:0 0 20px 2px rgba(199,210,254,.85)"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Nota vocale -->
+          <div class="glass rounded-[18px] p-3.5 mt-3 flex items-center gap-3">
+            <span class="shrink-0 w-9 h-9 rounded-full grid place-items-center text-[#05070d]"
+                  style="background:linear-gradient(180deg,#ffffff,#ccd6e6)">
+              ${icon("mic", "w-4 h-4", 1.7)}
+            </span>
+            <div class="flex items-center gap-[3px] h-7">${renderWaveform()}</div>
+            <span class="text-[0.68rem] text-white/45 ml-auto">0:34</span>
+          </div>
+
+          <!-- Costanza -->
+          <div class="glass rounded-[18px] p-4 mt-3">
+            <div class="flex items-center justify-between mb-3">
+              <p class="text-[0.75rem] text-white/85">Costanza</p>
+              <p class="text-[0.68rem] text-white/45">ultimi 4 mesi</p>
+            </div>
+            ${renderHeatmap()}
+          </div>
+
+          <div class="mt-4 flex items-center justify-between px-2 text-white/40">
+            ${icon("notebook", "w-5 h-5 text-white")}
+            ${icon("grid", "w-5 h-5")}
+            ${icon("compass", "w-5 h-5")}
+            ${icon("shield", "w-5 h-5")}
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/**
+ * navbar.js — Header fisso in vetro satinato.
+ * Si condensa allo scroll e apre un cassetto sui viewport stretti.
+ */
+
+
+
+function renderNavbar() {
+  const links = NAV_LINKS.map(
+    (link) => `<a class="nav-link" href="${link.href}">${link.label}</a>`
+  ).join("");
+
+  const drawerLinks = NAV_LINKS.map(
+    (link) =>
+      `<a class="nav-link py-3 text-[0.98rem]" data-nav-drawer-link href="${link.href}">${link.label}</a>`
+  ).join("");
+
+  return `
+  <header class="site-nav" data-nav>
+    <div class="container site-nav__inner">
+
+      <a href="#top" class="flex items-center gap-3" aria-label="${SITE.name}, torna all'inizio">
+        ${brandMark(40)}
+        <span class="text-[1.05rem] font-medium tracking-[-0.02em] metal-text">${SITE.name}</span>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-9" aria-label="Sezioni della pagina">
+        ${links}
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <a href="${APP_URL}" class="btn btn--primary hidden sm:inline-flex !py-2.5 !px-5 text-[0.9rem]">
+          Apri l'App ${icon("arrowRight", "w-4 h-4")}
+        </a>
+        <button type="button" class="btn btn--ghost md:hidden !p-2.5" data-nav-toggle
+                aria-expanded="false" aria-controls="nav-drawer" aria-label="Apri il menu">
+          ${icon("menu", "w-5 h-5")}
+        </button>
+      </div>
+
+    </div>
+
+    <div class="nav-drawer md:hidden" id="nav-drawer">
+      <div class="container flex flex-col gap-1 border-t border-white/[0.08] pt-2 pb-6">
+        ${drawerLinks}
+        <a href="${APP_URL}" class="btn btn--primary mt-3 w-full">
+          Apri l'App ${icon("arrowRight", "w-4 h-4")}
+        </a>
+      </div>
+    </div>
+  </header>`;
+}
+
+/** Collega il pulsante del menu e chiude il cassetto dopo ogni scelta. */
+function initNavbar() {
+  const toggle = document.querySelector("[data-nav-toggle]");
+  const drawer = document.getElementById("nav-drawer");
+  if (!toggle || !drawer) return;
+
+  const setOpen = (open) => {
+    drawer.classList.toggle("is-open", open);
+    toggle.setAttribute("aria-expanded", String(open));
+    toggle.setAttribute("aria-label", open ? "Chiudi il menu" : "Apri il menu");
+    toggle.innerHTML = icon(open ? "close" : "menu", "w-5 h-5");
+  };
+
+  toggle.addEventListener("click", () => {
+    setOpen(!drawer.classList.contains("is-open"));
+  });
+
+  drawer.querySelectorAll("[data-nav-drawer-link]").forEach((link) => {
+    link.addEventListener("click", () => setOpen(false));
+  });
+}
+
+/**
+ * hero.js — Sezione di apertura: badge, titolo metallico, mockup.
+ * L'entrata è una sequenza orchestrata una sola volta al caricamento.
+ */
+
+
+
+
+function renderHero() {
+  return `
+  <section id="top" class="relative overflow-hidden pt-[130px] md:pt-[168px] pb-24 md:pb-32">
+
+    <!-- Atmosfera: tre aloni sfocati con parallasse leggera -->
+    <div class="aurora" data-parallax="-0.12"
+         style="width:640px;height:520px;top:-180px;left:50%;transform:translateX(-50%);opacity:.5;
+                background:radial-gradient(circle, rgba(99,102,241,.55), transparent 62%)"></div>
+    <div class="aurora" data-parallax="0.05"
+         style="width:520px;height:420px;top:140px;left:-10%;opacity:.3;
+                background:radial-gradient(circle, rgba(148,163,184,.34), transparent 66%)"></div>
+    <div class="aurora" data-parallax="0.08"
+         style="width:480px;height:400px;top:260px;right:-8%;opacity:.34;
+                background:radial-gradient(circle, rgba(99,102,241,.34), transparent 66%)"></div>
+
+    <div class="container relative text-center">
+
+      <span class="glass reveal inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[0.8rem] text-white/60"
+            data-reveal-delay="0">
+        ${icon("bolt", "w-3.5 h-3.5 text-indigo-300", 1.7)}
+        ${HERO.badge}
+      </span>
+
+      <h1 class="display-1 metal-text mx-auto mt-7 reveal" data-reveal-delay="90" style="max-width:15ch">
+        ${HERO.title}
+      </h1>
+
+      <p class="lede mx-auto mt-7 reveal" data-reveal-delay="170">${HERO.lede}</p>
+
+      <div class="mt-9 flex flex-col sm:flex-row items-center justify-center gap-3 reveal" data-reveal-delay="250">
+        <a href="${APP_URL}" class="btn btn--primary w-full sm:w-auto">
+          ${HERO.primaryCta} ${icon("arrowRight", "w-4 h-4")}
+        </a>
+        <a href="#installazione" class="btn btn--ghost w-full sm:w-auto">
+          ${icon("share", "w-4 h-4")} ${HERO.secondaryCta}
+        </a>
+      </div>
+
+      <div class="mt-20 md:mt-24 flex justify-center reveal" data-reveal-delay="340">
+        ${renderPhoneMockup()}
+      </div>
+
+    </div>
+  </section>`;
+}
+
+/**
+ * features.js — Bento box asimmetrica delle funzionalità chiave.
+ * Ogni card può ospitare un piccolo visual che mostra la funzione
+ * invece di limitarsi a descriverla.
+ */
+
+
+
+
+/** Visual opzionale in coda alla card. */
+function renderVisual(kind) {
+  if (kind === "waveform") {
+    return `
+      <div class="glass rounded-[16px] mt-6 p-4 flex items-center gap-3">
+        <span class="shrink-0 w-8 h-8 rounded-full grid place-items-center text-[#05070d]"
+              style="background:linear-gradient(180deg,#ffffff,#ccd6e6)">
+          ${icon("mic", "w-4 h-4", 1.7)}
+        </span>
+        <div class="flex items-center gap-[3px] h-7 overflow-hidden">${renderWaveform(30)}</div>
+        <span class="text-[0.7rem] text-white/40 ml-auto">trascritto</span>
+      </div>`;
+  }
+
+  if (kind === "heatmap") {
+    return `<div class="mt-6">${renderHeatmap(22, 7)}</div>`;
+  }
+
+  if (kind === "prompt") {
+    return `
+      <div class="mt-8 space-y-3">
+        <div class="glass edge-light rounded-[16px] p-4">
+          <p class="text-[0.72rem] text-white/40">Domanda di stasera</p>
+          <p class="text-[1rem] mt-1.5 text-white/90 tracking-[-0.02em]">Che cosa rifaresti uguale?</p>
+        </div>
+        <div class="glass rounded-[16px] p-4">
+          <div class="flex justify-between text-[0.72rem] text-white/45 mb-2.5">
+            <span>Umore</span><span class="text-white/85">8 / 10</span>
+          </div>
+          <div class="track"><div class="track__fill" style="width:80%"></div></div>
+        </div>
+        <div class="glass rounded-[16px] p-4">
+          <div class="flex justify-between text-[0.72rem] text-white/45 mb-2.5">
+            <span>Sonno</span><span class="text-white/85">6 / 10</span>
+          </div>
+          <div class="track"><div class="track__fill" style="width:60%"></div></div>
+        </div>
+      </div>`;
+  }
+
+  return "";
+}
+
+function renderCard(feature, index) {
+  const spanClass =
+    feature.layout === "tall" ? "bento__item--tall" : "bento__item--wide";
+
+  return `
+    <article class="glass edge-light spotlight-card ${spanClass} reveal p-7 md:p-8"
+             data-spotlight data-reveal-delay="${index * 70}">
+      <span class="card-glyph inline-grid place-items-center w-11 h-11 rounded-[14px] border border-white/10 text-white/55"
+            style="background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.01))">
+        ${icon(feature.icon, "w-5 h-5")}
+      </span>
+
+      <h3 class="display-3 mt-5 text-white/92">${feature.title}</h3>
+      <p class="body-copy mt-3">${feature.body}</p>
+
+      ${renderVisual(feature.visual)}
+    </article>`;
+}
+
+function renderFeatures() {
+  return `
+  <section id="funzionalita" class="section section--divided">
+    <div class="container">
+
+      <div class="max-w-[46ch] reveal">
+        <h2 class="display-2 metal-text">Cinque strumenti, un rituale di tre minuti</h2>
+        <p class="lede mt-5">
+          Tutto quello che serve per tenere un diario davvero, senza che diventi un altro impegno da rimandare.
+        </p>
+      </div>
+
+      <div class="bento mt-14">
+        ${FEATURES.map(renderCard).join("")}
+      </div>
+
+    </div>
+  </section>`;
+}
+
+/**
+ * install-guide.js — Guida a tab per installare la PWA su iOS e Android.
+ * I passaggi sono una sequenza reale, quindi la numerazione è informativa.
+ */
+
+
+
+const PLATFORM_KEYS = Object.keys(INSTALL_GUIDE);
+
+function renderSteps(platformKey) {
+  const platform = INSTALL_GUIDE[platformKey];
+
+  const steps = platform.steps
+    .map(
+      (step, i) => `
+      <li class="glass edge-light spotlight-card p-7" data-spotlight
+          style="animation:reveal-step 620ms var(--ease-out-soft) ${i * 90}ms both">
+        <div class="flex items-center justify-between">
+          <span class="card-glyph inline-grid place-items-center w-11 h-11 rounded-[14px] border border-white/10 text-white/55"
+                style="background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.01))">
+            ${icon(step.icon, "w-5 h-5")}
+          </span>
+          <span class="step-index">${i + 1}</span>
+        </div>
+        <h3 class="mt-5 text-[1.02rem] text-white/92 tracking-[-0.02em]">${step.title}</h3>
+        <p class="body-copy mt-2.5 text-[0.9rem]">${step.body}</p>
+      </li>`
+    )
+    .join("");
+
+  return `
+    <ol class="grid gap-4 md:grid-cols-3">${steps}</ol>
+    <p class="mt-6 text-[0.85rem] text-white/45 flex items-center gap-2">
+      ${icon("sparkle", "w-4 h-4 text-indigo-300", 1.6)} ${platform.hint}
+    </p>`;
+}
+
+function renderInstallGuide() {
+  const tabs = PLATFORM_KEYS.map(
+    (key, i) => `
+      <button type="button" role="tab" class="tab-switch__btn"
+              id="tab-${key}" aria-controls="panel-install" data-platform="${key}"
+              aria-selected="${i === 0}">${INSTALL_GUIDE[key].label}</button>`
+  ).join("");
+
+  return `
+  <section id="installazione" class="section section--divided overflow-hidden">
+    <div class="aurora" data-parallax="0.06"
+         style="width:560px;height:420px;top:60px;left:56%;opacity:.28;
+                background:radial-gradient(circle, rgba(99,102,241,.4), transparent 66%)"></div>
+
+    <div class="container relative">
+
+      <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 reveal">
+        <div class="max-w-[44ch]">
+          <h2 class="display-2 metal-text">Installalo dalla schermata Home</h2>
+          <p class="lede mt-5">
+            Diariamente è una PWA: la stessa pagina che stai leggendo diventa un'app con la sua icona.
+            Tre passaggi, una volta sola.
+          </p>
+        </div>
+
+        <div class="glass tab-switch self-start" role="tablist" aria-label="Scegli il sistema operativo">
+          ${tabs}
+        </div>
+      </div>
+
+      <div class="mt-12 reveal" id="panel-install" role="tabpanel" aria-labelledby="tab-ios" data-install-panel>
+        ${renderSteps(PLATFORM_KEYS[0])}
+      </div>
+
+    </div>
+  </section>`;
+}
+
+/** Cambia piattaforma e ridisegna solo il pannello dei passaggi. */
+function initInstallGuide() {
+  const buttons = document.querySelectorAll("[data-platform]");
+  const panel = document.querySelector("[data-install-panel]");
+  if (!panel || !buttons.length) return;
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const key = button.dataset.platform;
+
+      buttons.forEach((b) => b.setAttribute("aria-selected", String(b === button)));
+      panel.setAttribute("aria-labelledby", `tab-${key}`);
+      panel.innerHTML = renderSteps(key);
+
+      // Le card appena create devono riagganciare lo spotlight del cursore.
+      document.dispatchEvent(new CustomEvent("diariamente:rebind-spotlight"));
+    });
+  });
+}
+
+/**
+ * security.js — Sezione dedicata a riservatezza e archiviazione dei dati.
+ */
+
+
+
+const INFRA_POINTS = [
+  "Accesso riservato al tuo account",
+  "Server nell'Unione Europea",
+  "Conforme al GDPR"
+];
+
+function renderSecurity() {
+  const cards = SECURITY_POINTS.map(
+    (point, i) => `
+      <article class="glass spotlight-card p-7 reveal" data-spotlight data-reveal-delay="${i * 70}">
+        <span class="card-glyph inline-grid place-items-center w-10 h-10 rounded-[12px] border border-white/10 text-white/55"
+              style="background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.01))">
+          ${icon(point.icon, "w-5 h-5")}
+        </span>
+        <h3 class="mt-5 text-[1rem] text-white/92 tracking-[-0.02em]">${point.title}</h3>
+        <p class="body-copy mt-2.5 text-[0.9rem]">${point.body}</p>
+      </article>`
+  ).join("");
+
+  const infra = INFRA_POINTS.map(
+    (text) => `
+      <li class="flex items-center gap-2.5 text-[0.9rem] text-white/60">
+        ${icon("check", "w-4 h-4 text-indigo-300", 2)} ${text}
+      </li>`
+  ).join("");
+
+  return `
+  <section id="sicurezza" class="section section--divided">
+    <div class="container grid gap-14 lg:gap-20 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] items-start">
+
+      <div class="reveal">
+        <h2 class="display-2 metal-text" style="max-width:16ch">
+          Un diario si scrive solo se nessuno lo legge
+        </h2>
+        <p class="lede mt-6">
+          La sincerità è la funzione più importante dell'app e dipende interamente dalla fiducia.
+          Per questo l'infrastruttura segue un principio semplice: meno dati raccogliamo, meglio funziona.
+        </p>
+
+        <div class="glass edge-light rounded-[26px] p-7 mt-9" style="max-width:420px">
+          <div class="flex items-center gap-3">
+            <span class="inline-grid place-items-center w-11 h-11 rounded-[14px] border border-white/10 text-white"
+                  style="background:linear-gradient(180deg, rgba(99,102,241,.26), rgba(255,255,255,.02))">
+              ${icon("shield", "w-5 h-5")}
+            </span>
+            <div>
+              <p class="text-[0.95rem] text-white/92">Infrastruttura Supabase</p>
+              <p class="text-[0.82rem] text-white/50">Postgres gestito, autenticazione e policy per riga</p>
+            </div>
+          </div>
+          <ul class="mt-5 space-y-2.5">${infra}</ul>
+        </div>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-4">${cards}</div>
+
+    </div>
+  </section>`;
+}
+
+/**
+ * faq.js — Accordion delle domande frequenti.
+ * Una sola risposta aperta per volta, come nelle pagine prodotto Apple.
+ */
+
+
+
+function renderFaq() {
+  const items = FAQ_ITEMS.map(
+    (item, i) => `
+      <div class="faq-item" data-faq-item data-open="${i === 0}">
+        <button type="button" class="faq-item__trigger" data-faq-trigger
+                aria-expanded="${i === 0}" aria-controls="faq-panel-${i}">
+          <span class="tracking-[-0.02em]">${item.q}</span>
+          ${icon("chevronDown", "faq-item__chevron w-5 h-5")}
+        </button>
+        <div class="faq-item__panel" id="faq-panel-${i}" role="region">
+          <p class="body-copy pb-7 pr-10">${item.a}</p>
+        </div>
+      </div>`
+  ).join("");
+
+  return `
+  <section id="faq" class="section section--divided">
+    <div class="container grid gap-12 lg:gap-20 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1fr)]">
+
+      <h2 class="display-2 metal-text reveal" style="max-width:14ch">Domande che arrivano spesso</h2>
+
+      <div class="reveal border-y border-white/[0.08]">${items}</div>
+
+    </div>
+  </section>`;
+}
+
+function initFaq() {
+  const items = Array.from(document.querySelectorAll("[data-faq-item]"));
+
+  items.forEach((item) => {
+    const trigger = item.querySelector("[data-faq-trigger]");
+
+    trigger.addEventListener("click", () => {
+      const willOpen = item.dataset.open !== "true";
+
+      items.forEach((other) => {
+        const open = other === item && willOpen;
+        other.dataset.open = String(open);
+        other.querySelector("[data-faq-trigger]").setAttribute("aria-expanded", String(open));
+      });
+    });
+  });
+}
+
+/**
+ * footer.js — Chiusura della pagina: invito finale e footer essenziale.
+ */
+
+
+
+function renderFinalCta() {
+  return `
+  <section class="section section--divided overflow-hidden">
+    <div class="aurora" data-parallax="-0.05"
+         style="width:720px;height:430px;bottom:-200px;left:50%;transform:translateX(-50%);opacity:.45;
+                background:radial-gradient(circle, rgba(99,102,241,.5), transparent 66%)"></div>
+
+    <div class="container relative text-center reveal">
+      <div class="flex justify-center">${brandMark(64)}</div>
+
+      <h2 class="display-2 metal-text mx-auto mt-8" style="max-width:17ch">
+        La prima pagina è la più difficile. Dura tre minuti.
+      </h2>
+
+      <div class="mt-9 flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a href="${APP_URL}" class="btn btn--primary w-full sm:w-auto !px-8">
+          Inizia ora ${icon("arrowRight", "w-4 h-4")}
+        </a>
+        <a href="#installazione" class="btn btn--ghost w-full sm:w-auto !px-8">
+          ${icon("phone", "w-4 h-4")} Come si installa
+        </a>
+      </div>
+    </div>
+  </section>`;
+}
+
+function renderFooter() {
+  const columns = FOOTER_COLUMNS.map(
+    (column) => `
+      <nav aria-label="${column.title}">
+        <p class="text-[0.82rem] text-white/45">${column.title}</p>
+        <ul class="mt-4 space-y-3">
+          ${column.links
+            .map((link) => `<li><a class="footer-link" href="${link.href}">${link.label}</a></li>`)
+            .join("")}
+        </ul>
+      </nav>`
+  ).join("");
+
+  return `
+  <footer class="border-t border-white/[0.08] pt-16 pb-10">
+    <div class="container grid gap-12 md:grid-cols-[minmax(0,1.2fr)_repeat(3,minmax(0,0.7fr))]">
+
+      <div>
+        <a href="#top" class="flex items-center gap-3" aria-label="${SITE.name}, torna all'inizio">
+          ${brandMark(40)}
+          <span class="text-[1.05rem] font-medium tracking-[-0.02em] metal-text">${SITE.name}</span>
+        </a>
+        <p class="body-copy mt-5" style="max-width:32ch">
+          Un diario guidato che sta nel browser e vive sulla tua schermata Home.
+        </p>
+        <a href="${APP_URL}" class="btn btn--ghost mt-6 !py-2.5 !px-5 text-[0.88rem]">
+          Apri la web app ${icon("arrowRight", "w-4 h-4")}
+        </a>
+      </div>
+
+      ${columns}
+    </div>
+
+    <div class="container mt-14 pt-6 border-t border-white/[0.08] flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between text-[0.82rem] text-white/40">
+      <p>© <span data-current-year>2026</span> ${SITE.domain} — Tutti i diritti riservati</p>
+      <p>Progressive Web App per iOS, Android e desktop</p>
+    </div>
+  </footer>`;
+}
+
+/** Tiene l'anno del copyright allineato senza doverlo modificare a mano. */
+function initFooter() {
+  const slot = document.querySelector("[data-current-year]");
+  if (slot) slot.textContent = String(new Date().getFullYear());
+}
+
+/**
+ * effects.js — Movimento e micro-interazioni.
+ *
+ * Tre regole seguite ovunque:
+ * 1. tutto passa da requestAnimationFrame o IntersectionObserver, mai da
+ *    listener di scroll che scrivono direttamente sullo stile;
+ * 2. se l'utente chiede meno movimento, gli effetti non si attivano affatto;
+ * 3. nessun effetto è necessario alla leggibilità della pagina.
+ */
+
+const prefersReducedMotion = () =>
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ------------------------------------------------------------------ */
+/* Entrate allo scroll                                                 */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Rivela gli elementi con classe .reveal quando entrano nel viewport.
+ * Il ritardo opzionale (data-reveal-delay, in ms) crea la cascata.
+ */
+function initScrollReveal() {
+  const targets = document.querySelectorAll(".reveal");
+
+  if (prefersReducedMotion()) {
+    targets.forEach((el) => el.classList.add("is-visible"));
+    return;
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+
+        const delay = Number(entry.target.dataset.revealDelay || 0);
+        entry.target.style.transitionDelay = `${delay}ms`;
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      });
+    },
+    { rootMargin: "0px 0px -12% 0px", threshold: 0.12 }
+  );
+
+  targets.forEach((el) => observer.observe(el));
+}
+
+/* ------------------------------------------------------------------ */
+/* Parallasse                                                          */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Sposta in verticale gli elementi con data-parallax in proporzione allo
+ * scroll. Valori consigliati: da -0.12 a 0.1, oltre diventa vistoso.
+ */
+function initParallax() {
+  if (prefersReducedMotion()) return;
+
+  const layers = Array.from(document.querySelectorAll("[data-parallax]"));
+  if (!layers.length) return;
+
+  let ticking = false;
+
+  const update = () => {
+    const scrollY = window.scrollY;
+
+    layers.forEach((layer) => {
+      const rect = layer.getBoundingClientRect();
+      const isNear = rect.bottom > -400 && rect.top < window.innerHeight + 400;
+      if (!isNear) return;
+
+      const factor = Number(layer.dataset.parallax) || 0;
+      const offset = (scrollY - (layer.offsetTop || 0)) * factor;
+
+      // translate3d mantiene l'animazione sulla GPU.
+      layer.style.transform = `${layer.dataset.parallaxBase || ""} translate3d(0, ${offset.toFixed(1)}px, 0)`;
+    });
+
+    ticking = false;
+  };
+
+  // Alcuni strati sono già centrati con una translate: la conserviamo.
+  layers.forEach((layer) => {
+    const current = getComputedStyle(layer).transform;
+    if (current && current !== "none" && layer.style.transform.includes("translateX")) {
+      layer.dataset.parallaxBase = layer.style.transform;
+    }
+  });
+
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    },
+    { passive: true }
+  );
+
+  update();
+}
+
+/* ------------------------------------------------------------------ */
+/* Spotlight che segue il cursore                                      */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Aggiorna le variabili --mx / --my usate dal gradiente radiale della card.
+ * Viene richiamata anche dopo i cambi di tab, quando il DOM è rigenerato.
+ */
+function initSpotlight() {
+  if (window.matchMedia("(hover: none)").matches) return;
+
+  const bind = () => {
+    document.querySelectorAll("[data-spotlight]").forEach((card) => {
+      if (card.dataset.spotlightBound === "true") return;
+      card.dataset.spotlightBound = "true";
+
+      card.addEventListener("pointermove", (event) => {
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty("--mx", `${event.clientX - rect.left}px`);
+        card.style.setProperty("--my", `${event.clientY - rect.top}px`);
+      });
+    });
+  };
+
+  bind();
+  document.addEventListener("diariamente:rebind-spotlight", bind);
+}
+
+/* ------------------------------------------------------------------ */
+/* Navbar che si condensa                                              */
+/* ------------------------------------------------------------------ */
+
+/** Attiva il vetro della navbar dopo i primi pixel di scroll. */
+function initNavCondense() {
+  const nav = document.querySelector("[data-nav]");
+  if (!nav) return;
+
+  const update = () => nav.classList.toggle("is-condensed", window.scrollY > 12);
+
+  update();
+  window.addEventListener("scroll", update, { passive: true });
+}
+
+/**
+ * app.js — Punto d'ingresso.
+ * Monta i componenti nell'ordine della pagina, poi attiva gli effetti.
+ */
+
+
+
+
+
+
+
+
+
+function mount() {
+  const root = document.getElementById("app");
+  if (!root) return;
+
+  root.innerHTML = [
+    renderNavbar(),
+    "<main>",
+    renderHero(),
+    renderFeatures(),
+    renderInstallGuide(),
+    renderSecurity(),
+    renderFaq(),
+    renderFinalCta(),
+    "</main>",
+    renderFooter()
+  ].join("");
+
+  // Comportamenti dei singoli componenti.
+  initNavbar();
+  initInstallGuide();
+  initFaq();
+  initFooter();
+
+  // Effetti trasversali, montati dopo che il DOM esiste.
+  initNavCondense();
+  initScrollReveal();
+  initParallax();
+  initSpotlight();
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", mount);
+} else {
+  mount();
+}
+
+
+</script>
+</body>
+</html>
+
