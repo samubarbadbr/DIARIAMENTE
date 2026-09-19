@@ -1,11 +1,5 @@
 /**
- * effects.js — Movimento e micro-interazioni.
- *
- * Tre regole seguite ovunque:
- * 1. tutto passa da requestAnimationFrame o IntersectionObserver, mai da
- *    listener di scroll che scrivono direttamente sullo stile;
- * 2. se l'utente chiede meno movimento, gli effetti non si attivano affatto;
- * 3. nessun effetto è necessario alla leggibilità della pagina.
+ * effects.js — Movimento, micro-interazioni e contatori animati per Diariamente.
  */
 
 const prefersReducedMotion = () =>
@@ -15,10 +9,6 @@ const prefersReducedMotion = () =>
 /* Entrate allo scroll                                                 */
 /* ------------------------------------------------------------------ */
 
-/**
- * Rivela gli elementi con classe .reveal quando entrano nel viewport.
- * Il ritardo opzionale (data-reveal-delay, in ms) crea la cascata.
- */
 export function initScrollReveal() {
   const targets = document.querySelectorAll(".reveal");
 
@@ -38,20 +28,63 @@ export function initScrollReveal() {
         observer.unobserve(entry.target);
       });
     },
-    { rootMargin: "0px 0px -12% 0px", threshold: 0.12 }
+    { rootMargin: "0px 0px -10% 0px", threshold: 0.1 }
   );
 
   targets.forEach((el) => observer.observe(el));
 }
 
 /* ------------------------------------------------------------------ */
+/* Contatori Numerici Animati                                          */
+/* ------------------------------------------------------------------ */
+
+export function initCounters() {
+  const statElements = document.querySelectorAll("[data-stat-value]");
+  if (!statElements.length) return;
+
+  const animate = (el) => {
+    const target = parseFloat(el.dataset.statValue);
+    const suffix = el.dataset.statSuffix || "";
+    const isFloat = target % 1 !== 0;
+    const duration = 1800; // ms
+    const startTime = performance.now();
+
+    const update = (now) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // Ease out quad
+      const eased = progress * (2 - progress);
+      const current = isFloat ? (eased * target).toFixed(1) : Math.floor(eased * target);
+
+      el.textContent = `${isFloat ? current : current.toLocaleString("it-IT")}${suffix}`;
+
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      }
+    };
+
+    requestAnimationFrame(update);
+  };
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          animate(entry.target);
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.5 }
+  );
+
+  statElements.forEach((el) => observer.observe(el));
+}
+
+/* ------------------------------------------------------------------ */
 /* Parallasse                                                          */
 /* ------------------------------------------------------------------ */
 
-/**
- * Sposta in verticale gli elementi con data-parallax in proporzione allo
- * scroll. Valori consigliati: da -0.12 a 0.1, oltre diventa vistoso.
- */
 export function initParallax() {
   if (prefersReducedMotion()) return;
 
@@ -71,14 +104,12 @@ export function initParallax() {
       const factor = Number(layer.dataset.parallax) || 0;
       const offset = (scrollY - (layer.offsetTop || 0)) * factor;
 
-      // translate3d mantiene l'animazione sulla GPU.
       layer.style.transform = `${layer.dataset.parallaxBase || ""} translate3d(0, ${offset.toFixed(1)}px, 0)`;
     });
 
     ticking = false;
   };
 
-  // Alcuni strati sono già centrati con una translate: la conserviamo.
   layers.forEach((layer) => {
     const current = getComputedStyle(layer).transform;
     if (current && current !== "none" && layer.style.transform.includes("translateX")) {
@@ -100,13 +131,9 @@ export function initParallax() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Spotlight che segue il cursore                                      */
+/* Spotlight Cursore sulle Card                                       */
 /* ------------------------------------------------------------------ */
 
-/**
- * Aggiorna le variabili --mx / --my usate dal gradiente radiale della card.
- * Viene richiamata anche dopo i cambi di tab, quando il DOM è rigenerato.
- */
 export function initSpotlight() {
   if (window.matchMedia("(hover: none)").matches) return;
 
@@ -128,10 +155,9 @@ export function initSpotlight() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Navbar che si condensa                                              */
+/* Navbar Condense                                                    */
 /* ------------------------------------------------------------------ */
 
-/** Attiva il vetro della navbar dopo i primi pixel di scroll. */
 export function initNavCondense() {
   const nav = document.querySelector("[data-nav]");
   if (!nav) return;

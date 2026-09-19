@@ -1,5 +1,5 @@
 /* =========================================================================
-   components.css — Stili specifici dei singoli componenti (Apple Dark Neon).
+   components.css — Stili specifici dei singoli componenti.
    ========================================================================= */
 
 /* ---------- Navbar ---------- */
@@ -16,7 +16,7 @@
 }
 
 .site-nav.is-condensed {
-  background: rgba(3, 5, 8, 0.75);
+  background: rgba(0, 0, 0, 0.55);
   border-bottom-color: var(--glass-stroke);
   backdrop-filter: blur(28px) saturate(160%);
   -webkit-backdrop-filter: blur(28px) saturate(160%);
@@ -44,7 +44,7 @@
   bottom: -6px;
   height: 1px;
   width: 0;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.55);
   transition: width var(--duration-base) var(--ease-out-soft);
 }
 
@@ -69,148 +69,68 @@
   display: inline-grid;
   place-items: center;
   border-radius: 28%;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: radial-gradient(118% 118% at 28% 16%, #1e293b 0%, #0f172a 46%, #030508 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: radial-gradient(118% 118% at 28% 16%, #26324a 0%, #111a2c 46%, #04060c 100%);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.3),
     inset 0 -12px 20px -14px rgba(var(--halo), 0.95),
     0 12px 28px -14px rgba(0, 0, 0, 0.95);
 }
 
-/* ---------- Mockup Smartphone / Tablet ---------- */
+/* ---------- Mockup smartphone ---------- */
 
 .device-frame {
   position: relative;
-  padding: 4px;
+  padding: 3px;
   border-radius: 46px;
   background: linear-gradient(
     158deg,
-    rgba(255, 255, 255, 0.5) 0%,
-    rgba(255, 255, 255, 0.08) 30%,
-    rgba(var(--halo), 0.45) 68%,
-    rgba(56, 189, 248, 0.4) 100%
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(255, 255, 255, 0.06) 30%,
+    rgba(var(--halo), 0.4) 68%,
+    rgba(255, 255, 255, 0.45) 100%
   );
-  box-shadow: var(--shadow-float), 0 0 120px -30px rgba(var(--halo), 0.7);
+  box-shadow: var(--shadow-float), 0 0 110px -34px rgba(var(--halo), 0.65);
 }
 
 .device-screen {
   position: relative;
-  border-radius: 42px;
+  border-radius: 43px;
   overflow: hidden;
-  background: #000000;
-  color: #ffffff;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  min-height: 640px;
-  display: flex;
-  flex-direction: column;
+  background: linear-gradient(180deg, #101a30 0%, #05070d 58%, #000000 100%);
 }
 
 .device-notch {
   position: absolute;
-  top: 10px;
+  top: 9px;
   left: 50%;
   transform: translateX(-50%);
-  width: 100px;
+  width: 96px;
   height: 24px;
   border-radius: var(--radius-pill);
   background: #000000;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  z-index: 10;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  z-index: 2;
 }
 
+/* Bagliore diffuso sotto il telefono. */
 .device-halo {
   position: absolute;
   left: 50%;
-  bottom: -80px;
+  bottom: -70px;
   transform: translateX(-50%);
-  width: 360px;
-  height: 140px;
+  width: 320px;
+  height: 120px;
   border-radius: 9999px;
-  filter: blur(70px);
+  filter: blur(60px);
   background: radial-gradient(ellipse, rgba(var(--halo), 0.6), transparent 70%);
   pointer-events: none;
 }
 
-/* App Mockup UI elements matching media_1789825506984.png */
-
-.app-pill-btn {
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 999px;
-  color: rgba(255, 255, 255, 0.85);
-  padding: 4px 12px;
-  font-size: 0.72rem;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
-
-.app-pill-btn:hover,
-.app-pill-btn.is-active {
-  background: #ffffff;
-  color: #000000;
-  border-color: #ffffff;
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
-}
-
-.app-pill-btn--white {
-  background: #ffffff;
-  color: #000000;
-  border: none;
-  border-radius: 999px;
-  font-weight: 600;
-}
-
-.app-tag-emotion {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 999px;
-  padding: 3px 10px;
-  font-size: 0.68rem;
-  color: rgba(255, 255, 255, 0.75);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.app-tag-emotion:hover,
-.app-tag-emotion.is-active {
-  background: rgba(99, 102, 241, 0.25);
-  border-color: rgba(99, 102, 241, 0.8);
-  color: #ffffff;
-  box-shadow: 0 0 12px rgba(99, 102, 241, 0.4);
-}
-
-.app-bottom-nav {
-  background: rgba(12, 16, 24, 0.95);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(20px);
-}
-
-.app-nav-tab {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 12px;
-  border-radius: 999px;
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 0.65rem;
-  font-weight: 500;
-  transition: all 0.25s ease;
-  cursor: pointer;
-  flex: 1;
-}
-
-.app-nav-tab.is-active {
-  background: #ffffff;
-  color: #000000;
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-}
-
-/* Waveform bar & Heatmap */
+/* ---------- Slider e forma d'onda dentro il mockup ---------- */
 
 .track { height: 6px; border-radius: 999px; background: rgba(255, 255, 255, 0.1); position: relative; }
-.track__fill { height: 6px; border-radius: 999px; background: linear-gradient(90deg, #6366f1, #38bdf8); }
+.track__fill { height: 6px; border-radius: 999px; background: linear-gradient(90deg, #64748b, #f2f6fc); }
 
 .wave-bar {
   width: 2px;
@@ -227,11 +147,11 @@
   animation: cell-pop 520ms var(--ease-out-soft) forwards;
 }
 
-/* ---------- Bento Grid ---------- */
+/* ---------- Bento grid ---------- */
 
 .bento {
   display: grid;
-  gap: 18px;
+  gap: 16px;
   grid-template-columns: repeat(1, minmax(0, 1fr));
 }
 
@@ -241,57 +161,7 @@
   .bento__item--tall { grid-column: span 3; grid-row: span 2; }
 }
 
-/* ---------- Problema vs Soluzione ---------- */
-
-.vs-card {
-  border-radius: var(--radius-lg);
-  padding: 2rem;
-  transition: all 0.35s var(--ease-out-soft);
-}
-
-.vs-card--problem {
-  background: rgba(239, 68, 68, 0.04);
-  border: 1px solid rgba(239, 68, 68, 0.15);
-}
-
-.vs-card--solution {
-  background: rgba(16, 185, 129, 0.05);
-  border: 1px solid rgba(16, 185, 129, 0.25);
-  box-shadow: 0 0 40px -15px rgba(16, 185, 129, 0.3);
-}
-
-/* ---------- Interactive Quiz ---------- */
-
-.quiz-option {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  width: 100%;
-  padding: 1.1rem 1.4rem;
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--glass-stroke);
-  color: var(--text-primary);
-  text-align: left;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.25s var(--ease-out-soft);
-}
-
-.quiz-option:hover {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(99, 102, 241, 0.5);
-  transform: translateX(4px);
-}
-
-.quiz-option.is-selected {
-  background: rgba(99, 102, 241, 0.18);
-  border-color: #6366f1;
-  color: #ffffff;
-  box-shadow: 0 0 24px -6px rgba(99, 102, 241, 0.5);
-}
-
-/* ---------- Install Guide Switch ---------- */
+/* ---------- Guida all'installazione ---------- */
 
 .tab-switch {
   display: inline-flex;
@@ -365,24 +235,7 @@
 
 .faq-item[data-open="true"] .faq-item__panel { max-height: 260px; opacity: 1; }
 
-/* ---------- Store Badges & Footer ---------- */
-
-.store-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.65rem 1.2rem;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  transition: all 0.25s ease;
-}
-
-.store-badge:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
-}
+/* ---------- Footer ---------- */
 
 .footer-link {
   font-size: 0.9rem;

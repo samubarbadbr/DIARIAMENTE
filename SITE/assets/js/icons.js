@@ -1,7 +1,6 @@
 /**
- * icons.js — Set di icone disegnate inline, nello stile di Lucide.
- * Sono SVG statici per evitare una dipendenza esterna: la pagina resta
- * completamente autonoma, requisito utile su GitHub Pages.
+ * icons.js — Set di icone SVG inline per Diariamente.
+ * Vettori puliti e autonomi, senza dipendenze esterne.
  */
 
 const ICON_PATHS = {
@@ -51,20 +50,42 @@ const ICON_PATHS = {
   compass: ["M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z", "m14.8 9.2-1.6 4.1a1 1 0 0 1-.6.6l-4 1.5 1.6-4.1a1 1 0 0 1 .6-.6Z"],
   download: ["M12 3v11", "m8 10.5 4 4 4-4", "M5 20h14"],
   eye: ["M12 5c5 0 9 4.3 9 7s-4 7-9 7-9-4.3-9-7 4-7 9-7Z", "M12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z"],
-  apple: [
-    "M12 20.6c-1.3-.2-3.1-.9-4.2-2.3-1.6-2-2.1-5-1.1-7.5.8-2 2.6-3.2 4.6-3.2 1.3 0 2.4.6 3.1.6s2-.6 3.4-.6c1.6 0 3.2.7 4.1 2.1-2.2 1.1-1.9 4.3.4 5.3-1 2.9-2.9 5.3-5 5.3-.8 0-1.6-.3-2.3-.3-.8 0-1.9.4-3 .3z",
-    "M15 4c-.5 1.5-1.5 2.6-3 3-.3-1.5.5-2.9 1.7-3.6 1.3-.8 2.3-.4 2.3-.4z"
+  sun: [
+    "M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0",
+    "M12 2v2", "M12 20v2", "M4.93 4.93l1.41 1.41", "M17.66 17.66l1.41 1.41",
+    "M2 12h2", "M20 12h2", "M6.34 17.66l-1.41 1.41", "M19.07 4.93l-1.41 1.41"
   ],
-  playstore: ["M4.5 3v18L20 12 4.5 3z", "M4.5 3l11 14", "M4.5 21l11-14"]
+  plus: ["M12 5v14", "M5 12h14"],
+  search: ["M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z", "m21 21-4.35-4.35"],
+  clock: ["M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0", "M12 7v5l3 3"],
+  chart: ["M3 3v18h18", "M18 17V9", "M13 17V5", "M8 17v-3"],
+  helpCircle: ["M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0", "M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3", "M12 17h.01"],
+  settings: [
+    "M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z",
+    "M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z"
+  ],
+  brain: [
+    "M9.5 4a3.5 3.5 0 0 0-3.4 4.3 3.5 3.5 0 0 0-.8 6.5 3.5 3.5 0 0 0 4.2 4.2 3.5 3.5 0 0 0 5 0 3.5 3.5 0 0 0 4.2-4.2 3.5 3.5 0 0 0-.8-6.5A3.5 3.5 0 0 0 14.5 4a3.5 3.5 0 0 0-5 0Z",
+    "M12 4v16"
+  ],
+  calendar: [
+    "M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Z",
+    "M16 2v4", "M8 2v4", "M3 10h18"
+  ],
+  heart: ["M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"],
+  star: ["m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2Z"],
+  zap: ["M13 2L3 14h9l-1 8 10-12h-9l1-8z"],
+  apple: [
+    "M12 2a3 3 0 0 0-2.3 1.2A3 3 0 0 0 9 5.5a3 3 0 0 0 2.3-1.2A3 3 0 0 0 12 2Z",
+    "M15.5 7.5c-1.3 0-2.4.7-3.1.7-.7 0-1.7-.7-3-.7-2.3 0-4.4 1.7-4.4 4.8 0 3 2.6 7.2 4.4 7.2 1.1 0 1.9-.8 3-.8 1.1 0 1.7.8 3 .8 1.8 0 4.1-3.9 4.4-4.8-2.6-1.1-2.9-4.8-.3-6.2-.8-1-2.4-1-4-1Z"
+  ],
+  playStore: [
+    "M4.5 3.5l14 8.5-14 8.5v-17z",
+    "M4.5 3.5l10.5 10.5",
+    "M4.5 20.5l10.5-10.5"
+  ]
 };
 
-/**
- * Restituisce il markup di un'icona.
- * @param {string} name        chiave di ICON_PATHS
- * @param {string} className   classi Tailwind da applicare all'svg
- * @param {number} strokeWidth spessore del tratto
- * @returns {string} markup SVG
- */
 export function icon(name, className = "w-5 h-5", strokeWidth = 1.5) {
   const paths = ICON_PATHS[name] || [];
   const body = paths.map((d) => `<path d="${d}" />`).join("");
@@ -73,12 +94,6 @@ export function icon(name, className = "w-5 h-5", strokeWidth = 1.5) {
     stroke-linecap="round" stroke-linejoin="round" class="${className}" aria-hidden="true">${body}</svg>`;
 }
 
-/**
- * Logo 3D di Diariamente: un cervello stilizzato con finitura metallica
- * dentro un quadrato ad angoli morbidi.
- * @param {number} size      lato del quadrato in px
- * @param {boolean} animated se true aggiunge il riflesso che lo attraversa
- */
 export function brandMark(size = 44, animated = true) {
   const glyph = Math.round(size * 0.64);
   const uid = `bm${Math.random().toString(36).slice(2, 8)}`;

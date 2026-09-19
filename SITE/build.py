@@ -1,18 +1,6 @@
 #!/usr/bin/env python3
 """
 build.py — Genera dist/index.html, una versione a file singolo del sito.
-
-Il sito modulare funziona già così com'è su GitHub Pages: questo script serve
-solo quando ti serve un unico file da incollare altrove (anteprime, email,
-hosting che non accetta sottocartelle).
-
-Cosa fa:
-  1. inserisce i CSS locali dentro un tag <style>;
-  2. concatena i moduli JS nell'ordine delle dipendenze, rimuovendo import
-     ed export (nessuno di essi usa export default o rinominazioni);
-  3. scrive il risultato in dist/index.html.
-
-Uso:  python3 build.py
 """
 
 from pathlib import Path
@@ -28,21 +16,17 @@ CSS_FILES = [
     "assets/css/components.css",
 ]
 
-# L'ordine conta: i moduli senza dipendenze vengono per primi.
 JS_FILES = [
     "assets/js/icons.js",
     "assets/js/data.js",
     "assets/js/components/phone-mockup.js",
     "assets/js/components/navbar.js",
     "assets/js/components/hero.js",
+    "assets/js/components/problem-solution.js",
     "assets/js/components/features.js",
-    "assets/js/components/before-after.js",
-    "assets/js/components/tech-specs.js",
-    "assets/js/components/quiz.js",
+    "assets/js/components/quiz-cta.js",
     "assets/js/components/install-guide.js",
-    "assets/js/components/manifesto.js",
     "assets/js/components/security.js",
-    "assets/js/components/testimonials.js",
     "assets/js/components/faq.js",
     "assets/js/components/footer.js",
     "assets/js/effects.js",

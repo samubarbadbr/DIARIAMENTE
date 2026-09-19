@@ -1,5 +1,7 @@
 /* =========================================================================
-   effects.css — Materiali, movimenti ed effetti Dark Neon Apple style.
+   effects.css — Materiali e movimento.
+   Tutto ciò che Tailwind non esprime bene: vetro satinato, riflessi
+   metallici, spotlight che segue il cursore, entrate allo scroll.
    ========================================================================= */
 
 /* ---------- 1. Vetro satinato ---------- */
@@ -12,19 +14,12 @@
 }
 
 .glass--opaque {
-  background: linear-gradient(180deg, rgba(9, 9, 11, 0.88), rgba(3, 5, 8, 0.82));
-  backdrop-filter: blur(28px) saturate(160%);
-  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  background: linear-gradient(180deg, rgba(9, 9, 11, 0.82), rgba(0, 0, 0, 0.72));
+  backdrop-filter: blur(28px) saturate(150%);
+  -webkit-backdrop-filter: blur(28px) saturate(150%);
 }
 
-.glass--neon {
-  background: rgba(18, 24, 38, 0.7);
-  border: 1px solid rgba(99, 102, 241, 0.25);
-  box-shadow: 0 0 35px -10px rgba(99, 102, 241, 0.25);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-}
-
+/* Filo di luce sul bordo superiore: è ciò che dà spessore al vetro. */
 .edge-light { position: relative; }
 .edge-light::before {
   content: "";
@@ -51,10 +46,6 @@
   color: transparent;
 }
 
-.neon-text-glow {
-  text-shadow: 0 0 20px rgba(99, 102, 241, 0.6), 0 0 40px rgba(56, 189, 248, 0.3);
-}
-
 /* ---------- 3. Pulsanti ---------- */
 
 .btn {
@@ -77,6 +68,7 @@
 
 .btn:active { transform: scale(0.975); }
 
+/* Primario: superficie in alluminio lucidato con alone indaco. */
 .btn--primary {
   position: relative;
   overflow: hidden;
@@ -97,6 +89,7 @@
     0 0 76px -16px rgba(var(--halo), 1);
 }
 
+/* Riflesso satinato che attraversa il pulsante al passaggio del mouse. */
 .btn--primary::after {
   content: "";
   position: absolute;
@@ -113,6 +106,7 @@
 
 .btn--primary:hover::after { left: 135%; opacity: 0.75; }
 
+/* Secondario: vetro con bordo che si accende. */
 .btn--ghost {
   color: var(--text-primary);
   background: rgba(255, 255, 255, 0.02);
@@ -127,7 +121,7 @@
   border-color: var(--glass-stroke-hover);
 }
 
-/* ---------- 4. Card con spotlight ---------- */
+/* ---------- 4. Card con spotlight che segue il cursore ---------- */
 
 .spotlight-card {
   position: relative;
@@ -147,10 +141,11 @@
   z-index: -1;
   opacity: 0;
   transition: opacity var(--duration-base) var(--ease-out-soft);
+  /* --mx / --my vengono aggiornate da effects.js al muoversi del mouse. */
   background: radial-gradient(
     420px circle at var(--mx, 50%) var(--my, 50%),
     rgba(255, 255, 255, 0.09),
-    rgba(var(--halo), 0.08) 38%,
+    rgba(var(--halo), 0.06) 38%,
     transparent 62%
   );
 }
@@ -163,6 +158,7 @@
 
 .spotlight-card:hover::after { opacity: 1; }
 
+/* Icona dentro la card: si schiarisce quando la card è attiva. */
 .card-glyph {
   transition:
     color var(--duration-base) var(--ease-out-soft),
@@ -211,7 +207,7 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* ---------- 7. Animazioni ---------- */
+/* ---------- 7. Movimento continuo, quasi impercettibile ---------- */
 
 @keyframes float-soft {
   0%, 100% { transform: translateY(0); }
@@ -220,6 +216,7 @@
 
 .float-soft { animation: float-soft 8s var(--ease-in-out-soft) infinite; }
 
+/* Riflesso che attraversa il logo a intervalli lunghi. */
 @keyframes mark-sweep {
   0%, 64% { left: -150%; }
   84%, 100% { left: 160%; }
@@ -239,26 +236,20 @@
   pointer-events: none;
 }
 
+/* Barre della forma d'onda audio. */
 @keyframes wave-pulse {
   0%, 100% { transform: scaleY(0.4); opacity: 0.4; }
   50% { transform: scaleY(1); opacity: 1; }
 }
 
+/* Celle della heatmap che compaiono una a una. */
 @keyframes cell-pop {
   from { opacity: 0; transform: scale(0.55); }
   to { opacity: 1; transform: none; }
 }
 
+/* Entrata dei passaggi della guida, rigenerati a ogni cambio di tab. */
 @keyframes reveal-step {
   from { opacity: 0; transform: translate3d(0, 18px, 0); }
   to { opacity: 1; transform: none; }
-}
-
-@keyframes pulse-emerald {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(1.3); }
-}
-
-.pulse-dot {
-  animation: pulse-emerald 2s infinite var(--ease-in-out-soft);
 }

@@ -1,23 +1,21 @@
 /**
- * app.js — Punto d'ingresso.
- * Monta i componenti nell'ordine della pagina, poi attiva gli effetti.
+ * app.js — Punto d'ingresso principale della Landing Page.
+ * Monta i componenti modulari nell'ordine e inizializza gli effetti e le interazioni.
  */
 
 import { renderNavbar, initNavbar } from "./components/navbar.js";
-import { renderHero, initWaitlist } from "./components/hero.js";
+import { renderHero } from "./components/hero.js";
+import { initPhoneMockupInteractivity } from "./components/phone-mockup.js";
+import { renderProblemSolution } from "./components/problem-solution.js";
 import { renderFeatures } from "./components/features.js";
+import { renderQuizSection, renderBetaWaitlistSection, initQuizAndWaitlist } from "./components/quiz-cta.js";
 import { renderInstallGuide, initInstallGuide } from "./components/install-guide.js";
 import { renderSecurity } from "./components/security.js";
 import { renderFaq, initFaq } from "./components/faq.js";
 import { renderFinalCta, renderFooter, initFooter } from "./components/footer.js";
-import { renderTestimonials } from "./components/testimonials.js";
-import { initPhoneMockup } from "./components/phone-mockup.js";
-import { renderBeforeAfter } from "./components/before-after.js";
-import { renderTechSpecs } from "./components/tech-specs.js";
-import { renderQuiz, initQuiz } from "./components/quiz.js";
-import { renderManifesto } from "./components/manifesto.js";
 import {
   initScrollReveal,
+  initCounters,
   initParallax,
   initSpotlight,
   initNavCondense
@@ -31,32 +29,30 @@ function mount() {
     renderNavbar(),
     "<main>",
     renderHero(),
-    renderBeforeAfter(),
+    renderProblemSolution(),
     renderFeatures(),
-    renderTechSpecs(),
-    renderQuiz(),
+    renderQuizSection(),
     renderInstallGuide(),
-    renderManifesto(),
     renderSecurity(),
-    renderTestimonials(),
     renderFaq(),
+    renderBetaWaitlistSection(),
     renderFinalCta(),
     "</main>",
     renderFooter()
   ].join("");
 
-  // Comportamenti dei singoli componenti.
+  // Inizializzazione comportamenti e interazioni dei singoli componenti
   initNavbar();
+  initPhoneMockupInteractivity();
+  initQuizAndWaitlist();
   initInstallGuide();
   initFaq();
   initFooter();
-  initWaitlist();
-  initPhoneMockup();
-  initQuiz();
 
-  // Effetti trasversali, montati dopo che il DOM esiste.
+  // Inizializzazione effetti trasversali
   initNavCondense();
   initScrollReveal();
+  initCounters();
   initParallax();
   initSpotlight();
 }
