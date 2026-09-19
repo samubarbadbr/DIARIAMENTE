@@ -1,6 +1,5 @@
 /**
  * navbar.js — Header fisso in vetro satinato.
- * Si condensa allo scroll e apre un cassetto sui viewport stretti.
  */
 
 import { icon, brandMark } from "../icons.js";
@@ -21,19 +20,19 @@ export function renderNavbar() {
     <div class="container site-nav__inner">
 
       <a href="#top" class="flex items-center gap-3" aria-label="${SITE.name}, torna all'inizio">
-        ${brandMark(40)}
-        <span class="text-[1.05rem] font-medium tracking-[-0.02em] metal-text">${SITE.name}</span>
+        ${brandMark(38)}
+        <span class="text-[1.08rem] font-semibold tracking-tight metal-text">${SITE.name}</span>
       </a>
 
-      <nav class="hidden md:flex items-center gap-9" aria-label="Sezioni della pagina">
+      <nav class="hidden md:flex items-center gap-8" aria-label="Sezioni della pagina">
         ${links}
       </nav>
 
-      <div class="flex items-center gap-2">
-        <a href="${APP_URL}" class="btn btn--primary hidden sm:inline-flex !py-2.5 !px-5 text-[0.9rem]">
+      <div class="flex items-center gap-3">
+        <a href="${APP_URL}" class="btn btn--primary hidden sm:inline-flex !py-2 !px-5 text-[0.88rem]">
           Apri l'App ${icon("arrowRight", "w-4 h-4")}
         </a>
-        <button type="button" class="btn btn--ghost md:hidden !p-2.5" data-nav-toggle
+        <button type="button" class="btn btn--ghost md:hidden !p-2" data-nav-toggle
                 aria-expanded="false" aria-controls="nav-drawer" aria-label="Apri il menu">
           ${icon("menu", "w-5 h-5")}
         </button>
@@ -52,7 +51,6 @@ export function renderNavbar() {
   </header>`;
 }
 
-/** Collega il pulsante del menu e chiude il cassetto dopo ogni scelta. */
 export function initNavbar() {
   const toggle = document.querySelector("[data-nav-toggle]");
   const drawer = document.getElementById("nav-drawer");

@@ -1,60 +1,71 @@
 /* =========================================================================
-   tokens.css — Design token di "Diariamente"
-   Unica fonte di verità per colori, raggi, ombre e tempi di animazione.
-   Ogni altro foglio di stile consuma queste variabili, mai valori grezzi.
+   tokens.css — Design token di "Diariamente" (Estrazione da app-sorgente)
+   1:1 con il tema Cyber / Scuro Neon dell'applicazione reale
    ========================================================================= */
 
 :root {
   color-scheme: dark;
 
-  /* ---------- Superfici ---------- */
-  --surface-void: #000000;         /* sfondo assoluto della pagina */
-  --surface-raised: #09090b;       /* fasce leggermente sollevate */
-  --surface-deep: #0f172a;         /* blu notte per i pannelli profondi */
+  /* ---------- Superfici 1:1 da app-sorgente ---------- */
+  --surface-void: #050508;         /* --bg-page reale */
+  --surface-raised: rgba(18, 20, 26, 0.85); /* --bg-surface reale */
+  --surface-deep: #0a0d14;         /* pannelli scuri */
+  --surface-subtle: rgba(255, 255, 255, 0.06); /* --bg-subtle reale */
 
-  /* ---------- Vetro satinato (Apple frosted glass) ---------- */
-  --glass-fill: rgba(255, 255, 255, 0.03);
-  --glass-fill-hover: rgba(255, 255, 255, 0.055);
-  --glass-stroke: rgba(255, 255, 255, 0.08);
-  --glass-stroke-hover: rgba(255, 255, 255, 0.18);
+  /* ---------- Bordi 1:1 ---------- */
+  --border-solid: rgba(255, 255, 255, 0.14);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+
+  /* ---------- Accenti Neon & Emozioni ---------- */
+  --neon-indigo: #6366f1;
+  --neon-cyan: #38bdf8;
+  --neon-emerald: #10b981;
+  --neon-purple: #818cf8;
+  --neon-rose: #f43f5e;
+  --neon-amber: #f59e0b;
+
+  /* ---------- Vetro satinato (Apple Frosted Glass) ---------- */
+  --glass-fill: rgba(18, 20, 26, 0.75);
+  --glass-fill-hover: rgba(255, 255, 255, 0.08);
+  --glass-stroke: rgba(255, 255, 255, 0.14);
+  --glass-stroke-hover: rgba(255, 255, 255, 0.28);
   --glass-blur: 24px;
 
-  /* ---------- Testo: gerarchia per opacità, non per colore ---------- */
-  --text-primary: rgba(255, 255, 255, 0.92);
-  --text-secondary: rgba(255, 255, 255, 0.62);
-  --text-tertiary: rgba(255, 255, 255, 0.42);
+  /* ---------- Testo ---------- */
+  --text-primary: #FFFFFF;
+  --text-secondary: #D4D4D8;
+  --text-tertiary: #A1A1AA;
 
   /* ---------- Accenti metallici ---------- */
   --metal-highlight: #ffffff;
   --metal-mid: #c8d2e0;
   --metal-shadow: #7c889b;
-  --halo: 99, 102, 241;            /* indaco, usato come rgb() componibile */
+  --halo: 99, 102, 241;            /* rgb indigo */
 
   /* ---------- Geometria ---------- */
   --radius-sm: 12px;
   --radius-md: 18px;
-  --radius-lg: 26px;
-  --radius-pill: 999px;
+  --radius-lg: 24px;
+  --radius-pill: 9999px;
 
   /* ---------- Profondità ---------- */
   --shadow-card: 0 24px 60px -32px rgba(0, 0, 0, 0.9);
   --shadow-float: 0 60px 120px -45px rgba(0, 0, 0, 1);
-  --shadow-inset-top: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  --shadow-inset-top: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  --shadow-glow-neon: 0 0 30px -5px rgba(99, 102, 241, 0.45);
 
-  /* ---------- Movimento: curve stile Apple ---------- */
+  /* ---------- Movimento ---------- */
   --ease-out-soft: cubic-bezier(0.22, 0.8, 0.28, 1);
   --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
-  --duration-fast: 240ms;
-  --duration-base: 420ms;
-  --duration-slow: 900ms;
+  --duration-fast: 200ms;
+  --duration-base: 400ms;
+  --duration-slow: 800ms;
 
   /* ---------- Layout ---------- */
   --container-max: 1180px;
   --nav-height: 72px;
 }
 
-/* La pagina è dark-only per scelta di brand: ribadiamo lo schema anche
-   quando il contenitore esterno propone un tema chiaro. */
 :root:not([data-theme="light"]) { color-scheme: dark; }
 :root[data-theme="dark"] { color-scheme: dark; }
 

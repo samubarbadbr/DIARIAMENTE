@@ -1,95 +1,74 @@
 /**
- * install-guide.js — Guida a tab per installare la PWA su iOS e Android.
- * I passaggi sono una sequenza reale, quindi la numerazione è informativa.
+ * install-guide.js — Guida all'installazione PWA iOS e Android.
  */
 
 import { icon } from "../icons.js";
 import { INSTALL_GUIDE } from "../data.js";
 
-const PLATFORM_KEYS = Object.keys(INSTALL_GUIDE);
-
 function renderSteps(platformKey) {
-  const platform = INSTALL_GUIDE[platformKey];
-
-  const steps = platform.steps
-    .map(
-      (step, i) => `
-      <li class="glass edge-light spotlight-card p-7" data-spotlight
-          style="animation:reveal-step 620ms var(--ease-out-soft) ${i * 90}ms both">
-        <div class="flex items-center justify-between">
-          <span class="card-glyph inline-grid place-items-center w-11 h-11 rounded-[14px] border border-white/10 text-white/55"
-                style="background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.01))">
-            ${icon(step.icon, "w-5 h-5")}
-          </span>
-          <span class="step-index">${i + 1}</span>
-        </div>
-        <h3 class="mt-5 text-[1.02rem] text-white/92 tracking-[-0.02em]">${step.title}</h3>
-        <p class="body-copy mt-2.5 text-[0.9rem]">${step.body}</p>
-      </li>`
-    )
-    .join("");
-
+  const info = INSTALL_GUIDE[platformKey];
   return `
-    <ol class="grid gap-4 md:grid-cols-3">${steps}</ol>
-    <p class="mt-6 text-[0.85rem] text-white/45 flex items-center gap-2">
-      ${icon("sparkle", "w-4 h-4 text-indigo-300", 1.6)} ${platform.hint}
-    </p>`;
+    <div class="space-y-4">
+      <p class="text-xs text-white/50 mb-4">${info.hint}</p>
+      <div class="grid gap-4 md:grid-cols-3">
+        ${info.steps.map((step, i) => `
+          <div class="glass p-5 rounded-2xl border border-white/10 space-y-2 relative" style="animation: reveal-step 0.4s ease forwards ${i * 0.1}s">
+            <span class="step-index">${i + 1}</span>
+            <div class="w-8 h-8 rounded-xl bg-white/10 text-white grid place-items-center mb-2">
+              ${icon(step.icon, "w-4 h-4")}
+            </div>
+            <h4 class="text-sm font-semibold text-white/90">${step.title}</h4>
+            <p class="text-xs text-white/60 leading-relaxed">${step.body}</p>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  `;
 }
 
 export function renderInstallGuide() {
-  const tabs = PLATFORM_KEYS.map(
-    (key, i) => `
-      <button type="button" role="tab" class="tab-switch__btn"
-              id="tab-${key}" aria-controls="panel-install" data-platform="${key}"
-              aria-selected="${i === 0}">${INSTALL_GUIDE[key].label}</button>`
-  ).join("");
-
   return `
-  <section id="installazione" class="section section--divided overflow-hidden">
-    <div class="aurora" data-parallax="0.06"
-         style="width:560px;height:420px;top:60px;left:56%;opacity:.28;
-                background:radial-gradient(circle, rgba(99,102,241,.4), transparent 66%)"></div>
+  <section id="installazione" class="section section--divided">
+    <div class="container">
 
-    <div class="container relative">
-
-      <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 reveal">
-        <div class="max-w-[44ch]">
-          <h2 class="display-2 metal-text">Installalo dalla schermata Home</h2>
-          <p class="lede mt-5">
-            Diariamente è una PWA: la stessa pagina che stai leggendo diventa un'app con la sua icona.
-            Tre passaggi, una volta sola.
-          </p>
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 reveal">
+        <div>
+          <span class="text-[0.78rem] font-semibold text-indigo-400 tracking-wider uppercase px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20">
+            Zero App Store
+          </span>
+          <h2 class="display-2 metal-text mt-3">Come si installa in 10 secondi</h2>
+          <p class="lede mt-3">Zero download, nessun aggiornamento da attendere. Vive nel browser.</p>
         </div>
 
-        <div class="glass tab-switch self-start" role="tablist" aria-label="Scegli il sistema operativo">
-          ${tabs}
+        <div class="tab-switch glass border border-white/10" role="tablist">
+          <button type="button" class="tab-switch__btn" role="tab" aria-selected="true" data-platform-tab="ios">
+            iPhone e iPad
+          </button>
+          <button type="button" class="tab-switch__btn" role="tab" aria-selected="false" data-platform-tab="android">
+            Android & Desktop
+          </button>
         </div>
       </div>
 
-      <div class="mt-12 reveal" id="panel-install" role="tabpanel" aria-labelledby="tab-ios" data-install-panel>
-        ${renderSteps(PLATFORM_KEYS[0])}
+      <div class="mt-10 reveal" id="install-steps-container">
+        ${renderSteps("ios")}
       </div>
 
     </div>
   </section>`;
 }
 
-/** Cambia piattaforma e ridisegna solo il pannello dei passaggi. */
 export function initInstallGuide() {
-  const buttons = document.querySelectorAll("[data-platform]");
-  const panel = document.querySelector("[data-install-panel]");
-  if (!panel || !buttons.length) return;
+  const buttons = document.querySelectorAll("[data-platform-tab]");
+  const container = document.getElementById("install-steps-container");
+  if (!buttons.length || !container) return;
 
-  buttons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const key = button.dataset.platform;
-
-      buttons.forEach((b) => b.setAttribute("aria-selected", String(b === button)));
-      panel.setAttribute("aria-labelledby", `tab-${key}`);
-      panel.innerHTML = renderSteps(key);
-
-      // Le card appena create devono riagganciare lo spotlight del cursore.
-      document.dispatchEvent(new CustomEvent("diariamente:rebind-spotlight"));
+  buttons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      buttons.forEach(b => b.setAttribute("aria-selected", "false"));
+      btn.setAttribute("aria-selected", "true");
+      const key = btn.dataset.platformTab;
+      container.innerHTML = renderSteps(key);
     });
   });
 }

@@ -1,107 +1,105 @@
 /**
- * icons.js — Set di icone disegnate inline, nello stile di Lucide.
- * Sono SVG statici per evitare una dipendenza esterna: la pagina resta
- * completamente autonoma, requisito utile su GitHub Pages.
+ * icons.js — Set di icone SVG inline 1:1 Lucide da app-sorgente.
  */
 
 const ICON_PATHS = {
   arrowRight: ["M5 12h13", "m12 5 7 7-7 7"],
   check: ["M20 6 9 17l-5-5"],
+  checkCircle: ["M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z", "m9 12 2 2 4-4"],
   chevronDown: ["m6 9 6 6 6-6"],
+  chevronRight: ["m9 18 6-6-6-6"],
   menu: ["M4 7h16", "M4 12h16", "M4 17h16"],
   close: ["M18 6 6 18", "M6 6l12 12"],
   mic: [
-    "M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z",
-    "M19 11v1a7 7 0 0 1-14 0v-1",
-    "M12 19v2"
+    "M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z",
+    "M19 10v2a7 7 0 0 1-14 0v-2",
+    "M12 19v3"
   ],
   shield: [
-    "M20 12.5c0 5-3.6 7.6-7.7 9a1 1 0 0 1-.6 0C7.6 20.1 4 17.5 4 12.5V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.2-2.7a1.2 1.2 0 0 1 1.6 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1Z",
-    "m9.2 12 2 2 3.6-3.8"
+    "M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.8 17 5 19 5a1 1 0 0 1 1 1z"
   ],
-  phone: ["M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z", "M11 18.5h2"],
+  phone: ["M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z", "M11 18h2"],
   grid: [
-    "M4 5.5h16a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-13a1 1 0 0 1 1-1Z",
-    "M8 2.5v5",
-    "M16 2.5v5",
-    "M3 11h18"
+    "M3 3h7v7H3z", "M14 3h7v7h-7z", "M14 14h7v7h-7z", "M3 14h7v7H3z"
   ],
   notebook: [
-    "M15.5 3.5H6a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h7",
-    "m17.5 12.5 3.2-3.2a1.6 1.6 0 0 0 0-2.3l-.7-.7a1.6 1.6 0 0 0-2.3 0L14.5 9.5v3h3Z",
-    "M8 8h4"
+    "M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"
   ],
   lock: [
-    "M5 11h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1Z",
-    "M8 11V7.5a4 4 0 0 1 8 0V11",
-    "M12 15v2"
+    "M19 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2z",
+    "M7 11V7a5 5 0 0 1 10 0v4"
   ],
-  cloud: ["M17.2 19H8.5a5.5 5.5 0 1 1 5-7.8h3.7a4 4 0 0 1 0 7.8Z"],
-  share: ["M12 15V3", "m8.5 6.5 3.5-3.5 3.5 3.5", "M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"],
+  cloud: ["M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"],
+  share: ["M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8", "M16 6l-4-4-4 4", "M12 2v13"],
   plusSquare: [
-    "M5.5 4h13a1.5 1.5 0 0 1 1.5 1.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5v-13A1.5 1.5 0 0 1 5.5 4Z",
-    "M12 8.5v7",
-    "M8.5 12h7"
+    "M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z",
+    "M12 8v8",
+    "M8 12h8"
   ],
-  dots: ["M12 6.2v.01", "M12 12v.01", "M12 17.8v.01"],
+  dots: ["M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0", "M12 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0", "M12 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"],
   sparkle: [
-    "m12 3 1.7 5.1a2 2 0 0 0 1.2 1.2L20 11l-5.1 1.7a2 2 0 0 0-1.2 1.2L12 19l-1.7-5.1a2 2 0 0 0-1.2-1.2L4 11l5.1-1.7a2 2 0 0 0 1.2-1.2Z"
+    "m12 3 1.912 5.813a2 2 0 0 0 1.275 1.275L21 12l-5.813 1.912a2 2 0 0 0-1.275 1.275L12 21l-1.912-5.813a2 2 0 0 0-1.275-1.275L3 12l5.813-1.912a2 2 0 0 0 1.275-1.275L12 3z"
   ],
-  bolt: ["M13 3 5.5 13H11l-1 8 8.5-10.5H13l1-7.5Z"],
-  compass: ["M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z", "m14.8 9.2-1.6 4.1a1 1 0 0 1-.6.6l-4 1.5 1.6-4.1a1 1 0 0 1 .6-.6Z"],
-  download: ["M12 3v11", "m8 10.5 4 4 4-4", "M5 20h14"],
-  eye: ["M12 5c5 0 9 4.3 9 7s-4 7-9 7-9-4.3-9-7 4-7 9-7Z", "M12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z"]
+  bolt: ["M13 2 3 14h9l-1 8 10-12h-9l1-8z"],
+  compass: ["M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm4.24-14.24l-3.53 7.07-7.07 3.53 3.53-7.07 7.07-3.53z"],
+  download: ["M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", "M7 10l5 5 5-5", "M12 15V3"],
+  eye: ["M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z", "M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"],
+  eyeOff: [
+    "M9.88 9.88a3 3 0 1 0 4.24 4.24",
+    "M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68",
+    "M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61",
+    "m2 2 20 20"
+  ],
+  sun: [
+    "M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0",
+    "M12 2v2", "M12 20v2", "m4.93 4.93 1.41 1.41", "m17.66 17.66 1.41 1.41",
+    "M2 12h2", "M20 12h2", "m6.34 17.66-1.41 1.41", "m19.07 4.93-1.41 1.41"
+  ],
+  moon: ["M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"],
+  plus: ["M12 5v14", "M5 12h14"],
+  search: ["M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z", "m21 21-4.35-4.35"],
+  clock: ["M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z", "M12 6v6l4 2"],
+  barChart: ["M12 20V10", "M18 20V4", "M6 20v-4"],
+  helpCircle: ["M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z", "M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3", "M12 17h.01"],
+  settings: [
+    "M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z",
+    "M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z"
+  ],
+  brain: [
+    "M9.5 2A2.5 2.5 0 0 0 7 4.5A2.5 2.5 0 0 0 4.5 7A2.5 2.5 0 0 0 2 9.5a2.5 2.5 0 0 0 2.5 2.5A2.5 2.5 0 0 0 7 14.5A2.5 2.5 0 0 0 9.5 17a2.5 2.5 0 0 0 2.5-2.5",
+    "M14.5 2a2.5 2.5 0 0 1 2.5 2.5A2.5 2.5 0 0 1 19.5 7a2.5 2.5 0 0 1 2.5 2.5a2.5 2.5 0 0 1-2.5 2.5A2.5 2.5 0 0 1 17 14.5a2.5 2.5 0 0 1-2.5 2.5A2.5 2.5 0 0 1 12 14.5",
+    "M12 2v20"
+  ],
+  calendar: [
+    "M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z",
+    "M16 2v4", "M8 2v4", "M3 10h18"
+  ],
+  heart: ["M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"],
+  trendingUp: ["m22 7-8.5 8.5-5-5L1 18", "m16 7 6 0 0 6"],
+  smile: ["M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z", "M8 14s1.5 2 4 2 4-2 4-2", "M9 9h.01", "M15 9h.01"],
+  palette: ["M12 2a10 10 0 1 0 10 10c0-2-1.5-3.5-3.5-3.5H16a2 2 0 0 1-2-2V5a3 3 0 0 0-2-3z"],
+  apple: [
+    "M12 2a3 3 0 0 0-2.3 1.2A3 3 0 0 0 9 5.5a3 3 0 0 0 2.3-1.2A3 3 0 0 0 12 2Z",
+    "M15.5 7.5c-1.3 0-2.4.7-3.1.7-.7 0-1.7-.7-3-.7-2.3 0-4.4 1.7-4.4 4.8 0 3 2.6 7.2 4.4 7.2 1.1 0 1.9-.8 3-.8 1.1 0 1.7.8 3 .8 1.8 0 4.1-3.9 4.4-4.8-2.6-1.1-2.9-4.8-.3-6.2-.8-1-2.4-1-4-1Z"
+  ],
+  playStore: [
+    "M4.5 3.5l14 8.5-14 8.5v-17z",
+    "M4.5 3.5l10.5 10.5",
+    "M4.5 20.5l10.5-10.5"
+  ]
 };
 
-/**
- * Restituisce il markup di un'icona.
- * @param {string} name        chiave di ICON_PATHS
- * @param {string} className   classi Tailwind da applicare all'svg
- * @param {number} strokeWidth spessore del tratto
- * @returns {string} markup SVG
- */
-export function icon(name, className = "w-5 h-5", strokeWidth = 1.5) {
-  const paths = ICON_PATHS[name] || [];
+export function icon(name, className = "w-5 h-5", strokeWidth = 1.75) {
+  const paths = ICON_PATHS[name] || ICON_PATHS["brain"];
   const body = paths.map((d) => `<path d="${d}" />`).join("");
 
   return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${strokeWidth}"
     stroke-linecap="round" stroke-linejoin="round" class="${className}" aria-hidden="true">${body}</svg>`;
 }
 
-/**
- * Logo 3D di Diariamente: un cervello stilizzato con finitura metallica
- * dentro un quadrato ad angoli morbidi.
- * @param {number} size      lato del quadrato in px
- * @param {boolean} animated se true aggiunge il riflesso che lo attraversa
- */
-export function brandMark(size = 44, animated = true) {
-  const glyph = Math.round(size * 0.64);
-  const uid = `bm${Math.random().toString(36).slice(2, 8)}`;
-
+export function brandMark(size = 40, animated = true) {
   return `
-    <span class="brand-mark ${animated ? "mark-sweep" : ""}" style="width:${size}px;height:${size}px">
-      <svg viewBox="0 0 24 24" width="${glyph}" height="${glyph}" fill="none" aria-hidden="true">
-        <defs>
-          <linearGradient id="${uid}-stroke" x1="4" y1="3" x2="20" y2="21" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="#ffffff" />
-            <stop offset=".44" stop-color="#c6d1e2" />
-            <stop offset=".72" stop-color="#7d8ca6" />
-            <stop offset="1" stop-color="#eaf0f8" />
-          </linearGradient>
-          <linearGradient id="${uid}-fill" x1="6" y1="20" x2="18" y2="4" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="rgba(99,102,241,.55)" />
-            <stop offset="1" stop-color="rgba(226,232,240,.1)" />
-          </linearGradient>
-        </defs>
-        <path d="M12 4.1c4 0 6.8 2.7 6.8 6.3 0 1.3-.4 2.4-1.1 3.4.4 2.6-1.6 4.8-4.2 4.8-.5 0-1-.1-1.5-.3-.5.2-1 .3-1.5.3-2.6 0-4.6-2.2-4.2-4.8-.7-1-1.1-2.1-1.1-3.4C5.2 6.8 8 4.1 12 4.1Z"
-              fill="url(#${uid}-fill)" stroke="url(#${uid}-stroke)" stroke-width="1.15" stroke-linejoin="round" />
-        <g stroke="url(#${uid}-stroke)" stroke-width="1" stroke-linecap="round" opacity=".92">
-          <path d="M12 4.6v13.6" />
-          <path d="M9.4 7.3c-1.1.4-1.8 1.4-1.8 2.5 0 .8.4 1.5 1 2" />
-          <path d="M14.6 7.3c1.1.4 1.8 1.4 1.8 2.5 0 .8-.4 1.5-1 2" />
-          <path d="M9.5 14.6c.7-.7 1.6-1.1 2.5-1.1" />
-          <path d="M14.5 14.6c-.7-.7-1.6-1.1-2.5-1.1" />
-        </g>
-      </svg>
-    </span>`;
+    <div class="rounded-2xl overflow-hidden shadow-sm border border-[var(--border-solid)] bg-[var(--bg-surface)] flex items-center justify-center shrink-0 ${animated ? 'mark-sweep' : ''}" style="width:${size}px;height:${size}px">
+      ${icon("brain", "w-5 h-5 text-white")}
+    </div>`;
 }
